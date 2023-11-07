@@ -1,15 +1,13 @@
 fileFormatVersion: 2
-guid: b1940cb3c5edd2943af977f41dfab0fe
+guid: 1a9ec07b205d9a24ead477fd43e280a6
 TextureImporter:
   fileIDToRecycleName:
-    21300000: TileGround1Creep
-    21300002: TileGround2Creep
-    21300004: TileGround3Creep
-    21300006: TileGround4Creep
-    21300008: TileGround1
-    21300010: TileGround2
-    21300012: TileGround3
-    21300014: TileGround4
+    21300000: Xag_Egg
+    21300002: Xag_Lair
+    21300004: Xag_Overlord
+    21300006: Xag_Larva
+    21300008: Xag_Drone
+    21300010: Xag_Soldier
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -81,13 +79,33 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TileGround1Creep
+      name: Xag_Egg
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 170
+        width: 5
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1d45f2cb0fd1c44a9aabeee957cccb9
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Xag_Lair
       rect:
         serializedVersion: 2
         x: 0
-        y: 248
-        width: 8
-        height: 8
+        y: 176
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -95,19 +113,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8867f8f06171546449401e276e8a670e
+      spriteID: 1ef1084c25143584a81e0355f6df2df1
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TileGround2Creep
+      name: Xag_Overlord
       rect:
         serializedVersion: 2
-        x: 8
-        y: 248
-        width: 8
-        height: 8
+        x: 1
+        y: 225
+        width: 14
+        height: 14
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,19 +133,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ba3a2d8f9cff13a4a94abe9ea16700f4
+      spriteID: 30badd321270f364fb239e65f001642b
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TileGround3Creep
+      name: Xag_Larva
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1
         y: 240
-        width: 8
-        height: 8
+        width: 7
+        height: 4
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -135,19 +153,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0f409ac4683f438418fe00bce55fb7dd
+      spriteID: b6a2b7c0466717643bf1cbdf72dd3581
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TileGround4Creep
+      name: Xag_Drone
       rect:
         serializedVersion: 2
-        x: 8
+        x: 19
         y: 240
-        width: 8
-        height: 8
+        width: 11
+        height: 6
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -155,19 +173,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: af0c3f98efc74344d826c5ef607de99a
+      spriteID: 0370812594007b244be82b42d71a472c
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TileGround1
+      name: Xag_Soldier
       rect:
         serializedVersion: 2
-        x: 16
-        y: 248
-        width: 8
-        height: 8
+        x: 17
+        y: 224
+        width: 15
+        height: 9
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -175,67 +193,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 03dee22dd16d4614e81c2e9c85757580
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: TileGround2
-      rect:
-        serializedVersion: 2
-        x: 24
-        y: 248
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0c1b6b5d9c6cd554f95d0be00a3d1848
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: TileGround3
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 240
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ff9a390c04cc4e841bb00d0b73219970
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: TileGround4
-      rect:
-        serializedVersion: 2
-        x: 24
-        y: 240
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7d623539be7bac3449a8d3230ddf0931
+      spriteID: 05ad353fe33760844bb7294a0dd58712
       vertices: []
       indices: 
       edges: []
@@ -243,7 +201,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 2a4f6b546996fcb44b86987c77c72ba2
+    spriteID: d4f95e42d42e8f142be6b83a925fd610
     vertices: []
     indices: 
     edges: []

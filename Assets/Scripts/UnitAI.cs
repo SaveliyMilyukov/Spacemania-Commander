@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class UnitAI : Unit
 {
+    public int limitPrice = 1;
     [Header("Order")]
     [SerializeField] List<UnitOrder> orders;
-    [SerializeField] UnitOrder nowOrder;
+    public UnitOrder nowOrder;
     [SerializeField] Vector2 targetPosition;
     [Space(5)]
     [Header("Moving")]
@@ -13,8 +14,10 @@ public class UnitAI : Unit
 
     Rigidbody2D rb;
 
-    void Awake()
+    public override void Awake()
     {
+        base.Awake();
+
         rb = GetComponent<Rigidbody2D>();   
     }
 
@@ -30,7 +33,8 @@ public class UnitAI : Unit
             switch (nowOrder.orderType)
             {
                 case UnitOrder.OrderType.HoldPosition:
-                    return;
+                    targetPosition = nowOrder.movePosition;
+                    break;
                 case UnitOrder.OrderType.Move:
                     targetPosition = nowOrder.movePosition;
                     break;
@@ -45,19 +49,19 @@ public class UnitAI : Unit
                     break;
             }
 
+            transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
             if(nowOrder.orderType != UnitOrder.OrderType.HoldPosition)
             {
-                transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-                if(Vector2.Distance(transform.position, targetPosition) < 0.1f)
+                if(Vector2.Distance(transform.position, targetPosition) < 0.2f)
                 {
                     nowOrder.isNull = true;
-                }
+                }          
             }
         }
 
     }
 
-    void CheckOrder()
+    private void CheckOrder()
     {
         if(nowOrder.isNull)
         {
@@ -76,6 +80,28 @@ public class UnitAI : Unit
             return;
         }
     }
+    public void ClearOrders(bool finishOrder_)
+    {
+        orders.Clear();
+
+        if (finishOrder_) FinishOrder();
+    }
+
+    public void FinishOrder()
+    {
+        nowOrder.isNull = true;
+    }
+
+    public void AddOrder(UnitOrder.OrderType orderType_, Vector2 positionToMove_, Transform target_)
+    {
+        UnitOrder newOrder = new UnitOrder();
+        newOrder.orderType = orderType_;
+        newOrder.movePosition = positionToMove_;
+        newOrder.moveTarget = target_;
+        newOrder.isNull = false;
+        orders.Add(newOrder);
+    }
+
 }
 
 [System.Serializable]
