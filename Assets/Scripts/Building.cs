@@ -4,6 +4,8 @@ using UnityEngine;
 public class Building : Unit
 {
     [Header("Building")]
+    [Header("")]
+    public Sprite cursorSprite;
     [Header("Rally Point")]
     [SerializeField] bool generateRallyPointOnAwake = false;
     [Space(5)]
@@ -46,6 +48,7 @@ public class Building : Unit
         else if(generateRallyPointOnAwake)
         {
             EditRallyPoint(transform.position + Vector3.down * spawnOffset);
+            SetRallyPointVision(false);
         }
     }
 
@@ -79,6 +82,8 @@ public class Building : Unit
 
     public virtual void SetRallyPointVision(bool state_)
     {
+        if (rallyPointLine == null) return;
+
         if(state_)
         {
             rallyPointLine.sortingOrder = 2;

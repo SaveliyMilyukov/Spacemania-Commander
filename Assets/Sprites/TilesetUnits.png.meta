@@ -8,6 +8,12 @@ TextureImporter:
     21300006: Xag_Larva
     21300008: Xag_Drone
     21300010: Xag_Soldier
+    21300012: Xag_Extractor
+    21300014: Xag_Solvent
+    21300016: Xag_BuildingStage1
+    21300018: Xag_BuildingStage2
+    21300020: Xag_BuildingStage3
+    21300022: Xag_BuildingStage4
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -194,6 +200,126 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 05ad353fe33760844bb7294a0dd58712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Xag_Extractor
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 176
+        width: 32
+        height: 23
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 045623460f0c4364ea05d2ed51b8e51d
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Xag_Solvent
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 176
+        width: 20
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6a0ca863df2b201498325a90253a4fc5
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Xag_BuildingStage1
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 208
+        width: 17
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f2e04f524a39d341ba90404faf686e7
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Xag_BuildingStage2
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 208
+        width: 22
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8200ea30889cded48a6a9f6ffcdf5c6d
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Xag_BuildingStage3
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 208
+        width: 30
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eaf60de8d4ddbae489208e697d8150a0
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Xag_BuildingStage4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 208
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: db541d47d66f81a479ac80643f93d8cf
       vertices: []
       indices: 
       edges: []

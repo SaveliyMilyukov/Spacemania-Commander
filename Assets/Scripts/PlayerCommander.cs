@@ -18,6 +18,10 @@ public class PlayerCommander : MonoBehaviour
     public List<UnitAI> units;
     [Space(5)]
     public List<Unit> unitsControlling;
+    [Header("Buildings")]
+    public Building[] buildingsPrefabs;
+    public BuildingWorkplace buildingWorkplacePrefab;
+    
 
     public virtual void Awake()
     {

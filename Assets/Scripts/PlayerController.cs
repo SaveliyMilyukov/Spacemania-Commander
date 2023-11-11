@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Tilemaps;
 
 public class PlayerController : PlayerCommander
 {
@@ -38,6 +39,10 @@ public class PlayerController : PlayerCommander
     [Space(5)]
     [SerializeField] private int unitID = 0;
     [SerializeField] private int unitIndex = 0;
+    [Header("Build Constructions")]
+    [SerializeField] private int buildingChoosed = -1;
+    [SerializeField] Image buildingUnderCursor;
+    [SerializeField] private TileBase tilewww;
 
     public static PlayerController localPlayer;
 
@@ -193,10 +198,12 @@ public class PlayerController : PlayerCommander
         {
             attack = false;
             ChooseNearestUnit();
+            TryToBuildConstruction();
         }
         if (Input.GetKeyDown(KeyCode.Mouse1)) // ПКМ
         {           
-            KeyboadAddOrdersToUnits();                  
+            KeyboadAddOrdersToUnits();
+            buildingChoosed = -1;
         }
     }
 
@@ -216,10 +223,24 @@ public class PlayerController : PlayerCommander
 
     private void UpdateUI()
     {
+        // Ресурсы
         oreText.text = ore.ToString();
         gasText.text = gas.ToString();
         limitText.text = limitCurrent + "/" + limitMax;
         if (limitCurrent > limitMax) limitText.color = Color.red; else limitText.color = Color.black;
+
+        // Строение под курсором 
+        if (buildingChoosed < 0 || buildingChoosed >= buildingsPrefabs.Length)
+        {
+            buildingUnderCursor.sprite = null;
+            buildingUnderCursor.color = Color.clear;
+        }
+        else
+        {
+            buildingUnderCursor.sprite = buildingsPrefabs[buildingChoosed].cursorSprite;
+            buildingUnderCursor.color = Color.white;
+            buildingUnderCursor.transform.position = Input.mousePosition;
+        }
     }
 
     private void KeyboadAddOrdersToUnits()
@@ -234,6 +255,13 @@ public class PlayerController : PlayerCommander
         float nearestDst = Vector2.Distance(cursorPosition, nearestUnit.transform.position);
         for (int i = 0; i < unitsAndConstructions.Count; i++)
         {
+            if(unitsAndConstructions[i] == null)
+            {
+                unitsAndConstructions.Remove(unitsAndConstructions[i]);
+                i--;
+                continue;
+            }
+
             float curDst = Vector2.Distance(cursorPosition, unitsAndConstructions[i].transform.position);
             if (curDst < nearestDst)
             {
@@ -292,6 +320,13 @@ public class PlayerController : PlayerCommander
         float nearestDst = Vector2.Distance(cursorPosition, nearestUnit.transform.position);
         for(int i = 0; i < unitsAndConstructions.Count; i++) // Поиск ближайшего юнита к курсору
         {
+            if (unitsAndConstructions[i] == null)
+            {
+                unitsAndConstructions.Remove(unitsAndConstructions[i]);
+                i--;
+                continue;
+            }
+
             float curDst = Vector2.Distance(cursorPosition, unitsAndConstructions[i].transform.position);
             if(curDst < nearestDst)
             {
@@ -467,5 +502,45 @@ public class PlayerController : PlayerCommander
         Building b = unitsControlling[unitIndex].myBuilding;
 
         b.OrderToBuildUnit(unitIndex_);
+    }
+
+    public void ChooseBuilding(int buildingIndex_)
+    {
+        if (buildingIndex_ < 0 || buildingIndex_ >= buildingsPrefabs.Length) return;
+
+        buildingChoosed = buildingIndex_;
+        buildingUnderCursor.sprite = buildingsPrefabs[buildingChoosed].cursorSprite;
+        buildingUnderCursor.SetNativeSize();
+    }
+
+    public void TryToBuildConstruction()
+    {
+        if (buildingChoosed < 0) return;
+
+        Vector2 cursorPos = cam.ScreenToWorldPoint(Input.mousePosition);
+        Vector3Int cellPos = GameManager.instance.groundTilemap.WorldToCell(cursorPos);
+        Vector3 constructionPosition = GameManager.instance.groundTilemap.CellToWorld(cellPos);
+
+        TileBase[] tiles = new TileBase[9];
+        for (int i = 0; i < tiles.Length; i++) tiles[i] = tilewww;
+        Vector3Int[] positions = new Vector3Int[9];
+
+        positions[0] = cellPos;
+        positions[1] = cellPos + Vector3Int.up;
+        positions[2] = cellPos + Vector3Int.down;
+        positions[3] = cellPos + Vector3Int.right;
+        positions[4] = cellPos + Vector3Int.left;
+        positions[5] = cellPos + Vector3Int.up + Vector3Int.right;
+        positions[6] = cellPos + Vector3Int.up + Vector3Int.left;
+        positions[7] = cellPos + Vector3Int.down + Vector3Int.right;
+        positions[8] = cellPos + Vector3Int.down + Vector3Int.left;
+
+        GameManager.instance.groundTilemap.SetTiles(positions, tiles);
+
+        BuildingWorkplace work = Instantiate(buildingWorkplacePrefab, constructionPosition, Quaternion.identity);
+        work.buildingPrefab = buildingsPrefabs[buildingChoosed].gameObject;
+        work.playerNumber = playerNumber;
+
+        buildingChoosed = -1;
     }
 }
