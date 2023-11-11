@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class BuildingWorkplace : Unit
 {
@@ -10,6 +11,7 @@ public class BuildingWorkplace : Unit
     [SerializeField] SpriteRenderer render;
     [Space(5)]
     [SerializeField] bool autoBuild = false;
+    [SerializeField]Image progressBar;
 
     public override void Awake()
     {
@@ -22,6 +24,13 @@ public class BuildingWorkplace : Unit
         base.Update();
 
         if (autoBuild) AddProgress(1f);
+        progressBar.fillAmount = currentBuildTime / buildTime;
+    }
+
+    public void SetBuildTime(float time_)
+    {
+        buildTime = time_;
+        currentBuildTime = 0;
     }
 
     public virtual void AddProgress(float speed_)

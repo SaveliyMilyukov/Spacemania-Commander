@@ -20,7 +20,8 @@ public class PlayerCommander : MonoBehaviour
     public List<Unit> unitsControlling;
     [Header("Buildings")]
     public Building[] buildingsPrefabs;
-    public BuildingWorkplace buildingWorkplacePrefab;
+    [Space(5)]
+    public BuildingMark buildingMarkPrefab;
     
 
     public virtual void Awake()
@@ -83,5 +84,11 @@ public class PlayerCommander : MonoBehaviour
                 b.EditRallyPoint(rallyPoint_);
             }
         }
+    }
+
+    public virtual void ReturnResourcesByPrice(ResourcePrice resourcePrice_)
+    {
+        ore += resourcePrice_.orePrice;
+        gas += resourcePrice_.gasPrice;
     }
 }

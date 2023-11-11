@@ -4,8 +4,11 @@ using UnityEngine;
 public class Building : Unit
 {
     [Header("Building")]
-    [Header("")]
+    [Header("Build Mode")]
     public Sprite cursorSprite;
+    public float buildBlockDistance = 1f;
+    public float buildingTime = 5f;
+    public ResourcePrice buildingPrice;
     [Header("Rally Point")]
     [SerializeField] bool generateRallyPointOnAwake = false;
     [Space(5)]
@@ -17,7 +20,7 @@ public class Building : Unit
     // Сторона же, где появится юнит, определяется по RallyPoint'у.
     [Space(5)]
     [Header("Production")]
-    [SerializeField] private bool isBuildingUnit = false;
+    public bool isBuildingUnit = false;
     [SerializeField] private int unitCreatingIndex = 0;
     public CreateUnit[] units;
     [SerializeField] private float timeToCreateUnit = 10f;
@@ -131,6 +134,11 @@ public class Building : Unit
         isBuildingUnit = true;
         unitCreatingIndex = unitIndex_;
         timeToCreateUnit = units[unitIndex_].unitBuildingTime;
+    }
+
+    public void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(transform.position, buildBlockDistance);
     }
 }
 

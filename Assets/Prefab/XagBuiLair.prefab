@@ -624,13 +624,33 @@ MonoBehaviour:
   playerNumber: 0
   unitID: 0
   controlPanelIndex: 1
-  health: 1
-  healthMax: 1
+  health: 1250
+  healthMax: 1250
+  healthBar: {fileID: 0}
+  attack:
+    attackName: Attack
+    damageByOneHit: 7
+    hitsByAttackCount: 1
+    currentHitsCount: 0
+    timeBtwHits: 0.5
+    timeToNextHit: 0.2
+    isHited: 0
+    timeBtwAttacks: 1.25
+    timeToNextAttack: 1
+    isAttacked: 0
+    attackDistance: 2
+  attackTarget: {fileID: 0}
   controlOutline: {fileID: 4578114773927355523}
   localPlayer: {fileID: 0}
   myUnitAI: {fileID: 0}
   myBuilding: {fileID: 0}
   cursorSprite: {fileID: 21300002, guid: 1a9ec07b205d9a24ead477fd43e280a6, type: 3}
+  buildBlockDistance: 1.5
+  buildingTime: 100
+  buildingPrice:
+    orePrice: 300
+    gasPrice: 0
+    limitPrice: 0
   generateRallyPointOnAwake: 1
   rallyPoint: {x: 0, y: 0}
   enableRallyPointLine: 1

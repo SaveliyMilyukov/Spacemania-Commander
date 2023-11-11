@@ -393,7 +393,7 @@ MonoBehaviour:
   - {fileID: 4578114775823436561, guid: f9bae335a099b154681fb8d8b7f5012e, type: 3}
   - {fileID: 569266162497399994, guid: 6771f3887f8a4df40b31b0b27f8bf20d, type: 3}
   - {fileID: 569266162497399994, guid: 5c9eb8dbd9ad5e6408659fcd370fb07c, type: 3}
-  buildingWorkplacePrefab: {fileID: 205304387889397072, guid: 5eb3a9e61e531124d86009aab3e8921e,
+  buildingMarkPrefab: {fileID: 2906835029143144948, guid: 6f5baa5544e89914fb43e64dbbf288ef,
     type: 3}
   cameraObjectPrefab: {fileID: 1180496024877793789, guid: 485098add38d04e4d983252d4a8b81ba,
     type: 3}
@@ -429,7 +429,6 @@ MonoBehaviour:
   unitIndex: 0
   buildingChoosed: -1
   buildingUnderCursor: {fileID: 7855644106891800151}
-  tilewww: {fileID: 11400000, guid: a482c8ba83576674ca004eff6a0f17fa, type: 2}
 --- !u!1 &1866941107461074417
 GameObject:
   m_ObjectHideFlags: 0

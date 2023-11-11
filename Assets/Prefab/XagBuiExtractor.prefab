@@ -130,13 +130,19 @@ MonoBehaviour:
   playerNumber: 0
   unitID: 0
   controlPanelIndex: 0
-  health: 300
-  healthMax: 300
+  health: 500
+  healthMax: 500
   controlOutline: {fileID: 4578114773927355523}
   localPlayer: {fileID: 0}
   myUnitAI: {fileID: 0}
   myBuilding: {fileID: 0}
   cursorSprite: {fileID: 21300012, guid: 1a9ec07b205d9a24ead477fd43e280a6, type: 3}
+  buildBlockDistance: 1
+  buildingTime: 30
+  buildingPrice:
+    orePrice: 100
+    gasPrice: 0
+    limitPrice: 0
   generateRallyPointOnAwake: 0
   rallyPoint: {x: 0, y: 0}
   enableRallyPointLine: 0

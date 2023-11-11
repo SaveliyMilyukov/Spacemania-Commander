@@ -40,9 +40,8 @@ public class PlayerController : PlayerCommander
     [SerializeField] private int unitID = 0;
     [SerializeField] private int unitIndex = 0;
     [Header("Build Constructions")]
-    [SerializeField] private int buildingChoosed = -1;
+    public int buildingChoosed = -1;
     [SerializeField] Image buildingUnderCursor;
-    [SerializeField] private TileBase tilewww;
 
     public static PlayerController localPlayer;
 
@@ -198,11 +197,11 @@ public class PlayerController : PlayerCommander
         {
             attack = false;
             ChooseNearestUnit();
-            TryToBuildConstruction();
+            OrderToBuild();
         }
         if (Input.GetKeyDown(KeyCode.Mouse1)) // ПКМ
         {           
-            KeyboadAddOrdersToUnits();
+            if(buildingChoosed == -1) KeyboadAddOrdersToUnits();
             buildingChoosed = -1;
         }
     }
@@ -252,7 +251,7 @@ public class PlayerController : PlayerCommander
         // Поиск юнита (если игрок нажал на него, то нужно будет сделать приказ Follow или Attack)
         Vector2 cursorPosition = cam.ScreenToWorldPoint(Input.mousePosition);
         Unit nearestUnit = GameManager.instance.allUnitsAndBuildingsOnMap[0];
-        float nearestDst = Vector2.Distance(cursorPosition, nearestUnit.transform.position);
+        float nearestDst = 999999999;
         for (int i = 0; i < unitsAndConstructions.Count; i++)
         {
             if(unitsAndConstructions[i] == null)
@@ -433,7 +432,7 @@ public class PlayerController : PlayerCommander
         UpdateUnitsControllingIcons();
     }
 
-    private void UpdateUnitsControllingIcons()
+    public void UpdateUnitsControllingIcons()
     {
         for(int i = 0; i < unitIcons.Length; i++)
         {
@@ -513,34 +512,44 @@ public class PlayerController : PlayerCommander
         buildingUnderCursor.SetNativeSize();
     }
 
-    public void TryToBuildConstruction()
+    public void OrderToBuild()
     {
         if (buildingChoosed < 0) return;
+        if (ore < buildingsPrefabs[buildingChoosed].buildingPrice.orePrice ||
+           gas < buildingsPrefabs[buildingChoosed].buildingPrice.gasPrice) return;
+
+        // Поиск рабочего для дачи приказа на строительство
+        bool isBuilderFound = false;
+        XagDrone builder = null;
+        for(int i = 0; i < unitsControlling.Count; i++)
+        {
+            if(unitsControlling[i].GetComponent<XagDrone>())
+            {
+                isBuilderFound = true;
+                builder = unitsControlling[i].GetComponent<XagDrone>();
+                break;
+            }
+        }
+
+        if (!isBuilderFound) return;
 
         Vector2 cursorPos = cam.ScreenToWorldPoint(Input.mousePosition);
         Vector3Int cellPos = GameManager.instance.groundTilemap.WorldToCell(cursorPos);
         Vector3 constructionPosition = GameManager.instance.groundTilemap.CellToWorld(cellPos);
 
-        TileBase[] tiles = new TileBase[9];
-        for (int i = 0; i < tiles.Length; i++) tiles[i] = tilewww;
-        Vector3Int[] positions = new Vector3Int[9];
+        BuildingMark mark = Instantiate(buildingMarkPrefab, constructionPosition, Quaternion.identity);
+        mark.building = buildingsPrefabs[buildingChoosed];
+        mark.playerNumber = playerNumber;
+        mark.render.sprite = buildingsPrefabs[buildingChoosed].cursorSprite;
+        mark.buildingPrice = buildingsPrefabs[buildingChoosed].buildingPrice;
+        mark.buildBlockDistance = buildingsPrefabs[buildingChoosed].buildBlockDistance;
 
-        positions[0] = cellPos;
-        positions[1] = cellPos + Vector3Int.up;
-        positions[2] = cellPos + Vector3Int.down;
-        positions[3] = cellPos + Vector3Int.right;
-        positions[4] = cellPos + Vector3Int.left;
-        positions[5] = cellPos + Vector3Int.up + Vector3Int.right;
-        positions[6] = cellPos + Vector3Int.up + Vector3Int.left;
-        positions[7] = cellPos + Vector3Int.down + Vector3Int.right;
-        positions[8] = cellPos + Vector3Int.down + Vector3Int.left;
+        if (!Input.GetKey(KeyCode.LeftShift)) builder.ClearOrders(true);
+        builder.AddOrder(UnitOrder.OrderType.Build, mark.transform.position, mark.transform, buildingChoosed);
 
-        GameManager.instance.groundTilemap.SetTiles(positions, tiles);
+        ore -= buildingsPrefabs[buildingChoosed].buildingPrice.orePrice;
+        gas -= buildingsPrefabs[buildingChoosed].buildingPrice.gasPrice;
 
-        BuildingWorkplace work = Instantiate(buildingWorkplacePrefab, constructionPosition, Quaternion.identity);
-        work.buildingPrefab = buildingsPrefabs[buildingChoosed].gameObject;
-        work.playerNumber = playerNumber;
-
-        buildingChoosed = -1;
+        if(!Input.GetKey(KeyCode.LeftShift)) buildingChoosed = -1;
     }
 }

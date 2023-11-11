@@ -52,6 +52,7 @@ public class XagLair : Building
 
     public override void OrderToBuildUnit(int unitIndex_)
     {
+        if (isBuildingUnit) return;
         if (larvas <= 0 || PlayerController.localPlayer.ore < units[0].unitPrice.orePrice) return;
         larvas--;
         RefreshEggsSprite();

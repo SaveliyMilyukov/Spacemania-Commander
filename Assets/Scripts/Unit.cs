@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class Unit : MonoBehaviour
 {
@@ -12,8 +13,12 @@ public class Unit : MonoBehaviour
     public int unitID = 0; // ID (номер) юнита в игре (Не уникальный на каждого. К примеру у двух пехотинцев будет одинаковый unitID)
     public int controlPanelIndex = 0; // Index (номер) контольной панели (Это та, что справа внизу)
     [Space(5)]
-    public int health = 1; // Текущее здоровье
-    public int healthMax = 1; // Максимальное здоровье
+    public int health = 100; // Текущее здоровье
+    public int healthMax = 100; // Максимальное здоровье
+    public Image healthBar;
+    [Space(5)]
+    public UnitAttack attack;
+    public Unit attackTarget;
     [Space(5)]
     [SerializeField] private GameObject controlOutline; // Обводка при выделении юнита
     
@@ -38,11 +43,68 @@ public class Unit : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        if(healthBar != null)
+        {
+            float h = health, hM = healthMax;
+            healthBar.fillAmount = h / hM;
+            if (h / hM == 1) healthBar.transform.parent.gameObject.SetActive(false);
+            else healthBar.transform.parent.gameObject.SetActive(true);
+        }
+
+        if(attack.isAttacked) // Если уже совершил атаку
+        {
+            attack.timeToNextAttack -= Time.deltaTime;
+            if(attack.timeToNextAttack <= 0)
+            {
+                attack.timeToNextAttack = attack.timeBtwAttacks;
+                attack.isAttacked = false;
+            }
+        }
+        else if(attack.isHited) // Если совершил попадение
+        {
+            attack.timeToNextHit -= Time.deltaTime;
+            if(attack.timeToNextHit <= 0)
+            {
+                attack.timeToNextHit = attack.timeBtwHits;
+                attack.isHited = false;
+            }
+        }
+        else if(attack.currentHitsCount < attack.hitsByAttackCount) // Если еще не совершил попадение или сделал не всё количество
+        {
+            if(attackTarget != null)
+            {
+                if(Vector2.Distance(transform.position, attackTarget.transform.position) < attack.attackDistance)
+                {
+                    AttackSomeone(attackTarget);
+                }
+            }
+        }
+            
     }
 
     public virtual void FindLocalPlayer()
     {
         localPlayer = FindObjectOfType<PlayerController>();
+    }
+
+    public virtual void AttackSomeone(Unit target_)
+    {
+        attack.isHited = true;
+        attack.timeToNextHit = attack.timeBtwHits;
+        attack.currentHitsCount++;
+        target_.TakeDamage(attack.damageByOneHit);
+
+        if(attack.currentHitsCount == attack.hitsByAttackCount)
+        {
+            attack.currentHitsCount = 0;
+            attack.isAttacked = true;
+            attack.isHited = false;
+        }
+    }
+
+    public virtual void TakeDamage(int damage_)
+    {
+        health -= damage_;
     }
 
     public void SetControlOutline(bool state_)
@@ -59,4 +121,33 @@ public class Unit : MonoBehaviour
     {
         isInCameraView = false;
     }
+
+    public void OnDrawGizmosSelected()
+    {
+        if(attack != null)
+        {
+            Gizmos.DrawWireSphere(transform.position, attack.attackDistance);
+        }
+    }
+}
+
+[System.Serializable]
+public class UnitAttack
+{
+    public string attackName = "Attack";
+    [Space(5)]
+    public int damageByOneHit = 7; // Урон от одного попадания (удара, попадения пули и т.п.)
+    public int hitsByAttackCount = 1; // Кол-во попадений (ударов/выстрелов)
+    public int currentHitsCount = 0;
+    public float timeBtwHits = 0.2f; // Время между попадениями (ударами/выстрелами)
+    public float timeToNextHit = 0.2f;
+    [Space(3)]
+    public bool isHited = false;
+    [Space(5)]
+    public float timeBtwAttacks = 1f; // Время между атаками
+    // Допустим в одной атаке 2 удара, сначала производятся эти два удара, потом идет таймер на перезарядку всей атаки (тоесть обоих ударов)
+    public float timeToNextAttack = 1f;
+    public bool isAttacked = false;
+    [Space(5)]
+    public float attackDistance = 2f;
 }
