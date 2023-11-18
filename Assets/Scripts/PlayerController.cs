@@ -252,29 +252,29 @@ public class PlayerController : PlayerCommander
         Vector2 cursorPosition = cam.ScreenToWorldPoint(Input.mousePosition);
         Unit nearestUnit = GameManager.instance.allUnitsAndBuildingsOnMap[0];
         float nearestDst = 999999999;
-        for (int i = 0; i < unitsAndConstructions.Count; i++)
+        for (int i = 0; i < GameManager.instance.allUnitsAndBuildingsOnMap.Length; i++)
         {
-            if(unitsAndConstructions[i] == null)
+            if(GameManager.instance.allUnitsAndBuildingsOnMap[i] == null)
             {
-                unitsAndConstructions.Remove(unitsAndConstructions[i]);
                 i--;
                 continue;
             }
 
-            float curDst = Vector2.Distance(cursorPosition, unitsAndConstructions[i].transform.position);
+            float curDst = Vector2.Distance(cursorPosition, GameManager.instance.allUnitsAndBuildingsOnMap[i].transform.position);
             if (curDst < nearestDst)
             {
                 nearestDst = curDst;
-                nearestUnit = unitsAndConstructions[i];
+                nearestUnit = GameManager.instance.allUnitsAndBuildingsOnMap[i];
             }
         }
 
-        bool isUnitUnderTheCursor = false;
+        bool isUnitUnderTheCursor = false;      
         if (nearestUnit.GetComponent<CircleCollider2D>())
         {
             if (nearestDst < 1f * nearestUnit.GetComponent<CircleCollider2D>().radius)
             {
                 isUnitUnderTheCursor = true;
+               
             }
         }
         else if (nearestUnit.GetComponent<BoxCollider2D>())
@@ -287,13 +287,24 @@ public class PlayerController : PlayerCommander
 
         if (isUnitUnderTheCursor)
         {
-            if (attack)
+            print("oh, this is a unit!");
+            if (attack && nearestUnit.isDamageCanBeTaken)
             {
                 order = UnitOrder.OrderType.Attack;
             }
             else
             {
-                order = UnitOrder.OrderType.Follow;
+                ResourceField rs = nearestUnit.GetComponent<ResourceField>();
+                if(rs != null)
+                {
+                    print("GATHER!");
+                    order = UnitOrder.OrderType.Gather;
+                }
+                else
+                {
+                    print("fu...");
+                    order = UnitOrder.OrderType.Follow;
+                }
             }
         }
         else if (attack)
@@ -350,7 +361,7 @@ public class PlayerController : PlayerCommander
             }
         }
 
-        if (!isUnitUnderTheCursor) { return; } // Если под курсором нет юнита - выходим из функции
+        if (!isUnitUnderTheCursor || nearestUnit.GetComponent<ResourceField>()) { return; } // Если под курсором нет юнита - выходим из функции
 
         if(Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftControl)) // Если зажат Shift и НЕ зажат Cntrl
         {

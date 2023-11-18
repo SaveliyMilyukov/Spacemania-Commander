@@ -315,6 +315,10 @@ MonoBehaviour:
     buildingIndex: -1
   targetPosition: {x: 0, y: 0}
   moveSpeed: 5
+  isCanGather: 1
+  resourceInHands: 0
+  gatherTime: 7.5
+  timeToGather: 5
 --- !u!58 &254389226259095629
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -417,7 +421,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9061338115070844595
 RectTransform:
   m_ObjectHideFlags: 0

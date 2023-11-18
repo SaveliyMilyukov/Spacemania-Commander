@@ -1,6 +1,13 @@
 ﻿using UnityEngine;
 
-public class ResourceField : MonoBehaviour
+public class ResourceField : Unit
 {
-    public int resourceCount = 100;
+    [Header("(Resource Field)")]
+    public UnitAI busedBy;
+    public ResourceType resourceType = ResourceType.Ore;
+}
+
+public enum ResourceType
+{
+    None, Ore, Gas
 }

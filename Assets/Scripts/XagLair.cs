@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class XagLair : Building
+public class XagLair : ResourceStorage
 {
     [Header("Xag Lair")]
     [SerializeField] private int larvas = 0;

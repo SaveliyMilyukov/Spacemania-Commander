@@ -12,6 +12,12 @@ public class UnitAI : Unit
     [Space(5)]
     [Header("Moving")]
     [SerializeField] float moveSpeed = 5f;
+    [Header("Gathering")]
+    public bool isCanGather = false;
+    public ResourceType resourceInHands = ResourceType.None;
+    [SerializeField] float gatherTime = 7.5f;
+    [SerializeField] float timeToGather = 7.5f;
+    public Transform lastResField;
 
     Rigidbody2D rb;
 
@@ -51,6 +57,20 @@ public class UnitAI : Unit
                 case UnitOrder.OrderType.Build:
                     targetPosition = nowOrder.moveTarget.position;
                     break;
+                case UnitOrder.OrderType.Gather:
+                    targetPosition = nowOrder.moveTarget.position;
+                    break;
+                case UnitOrder.OrderType.DelieverRes:
+                    targetPosition = nowOrder.moveTarget.position;
+                    break;
+            }
+
+            if (nowOrder.orderType != UnitOrder.OrderType.Gather) timeToGather = gatherTime;
+
+            if(!isCanGather && nowOrder.orderType == UnitOrder.OrderType.Gather)
+            {
+                FinishOrder(true);
+                return;
             }
 
             float distanceToTarget = Vector2.Distance(transform.position, targetPosition);
@@ -61,10 +81,60 @@ public class UnitAI : Unit
             if(nowOrder.orderType != UnitOrder.OrderType.HoldPosition)
             {
                 if(distanceToTarget < 0.2f)
-                {                                    
+                {                       
                     if(nowOrder.orderType == UnitOrder.OrderType.Build)
                     {
                         TryToBuildConstruction();
+                    }
+                    else if (nowOrder.orderType == UnitOrder.OrderType.Gather)
+                    {
+                        print("GATHER");
+                        if(resourceInHands != ResourceType.Ore)
+                        {
+                            ResourceField resField = nowOrder.moveTarget.GetComponent<ResourceField>();
+                            if (resField != null) // Если цель - месторождение
+                            {
+                                if(resField.busedBy == null || resField.busedBy == this)
+                                {
+                                    if(resField.resourceType == ResourceType.Ore)
+                                    {
+                                        if(timeToGather <= 0)
+                                        {
+                                            resField.busedBy = null;
+                                            resourceInHands = ResourceType.Ore;
+                                            resField.health -= 8;
+                                            if(orders.Count < 2) FindNearestResourceStorage();
+                                        }
+                                        else
+                                        {
+                                            resField.busedBy = this;
+                                            lastResField = resField.transform;
+                                            timeToGather -= Time.deltaTime;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    FindNearestResourceField(resField, true);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (orders.Count < 2) FindNearestResourceStorage();
+                        }
+                    }
+                    else if (nowOrder.orderType == UnitOrder.OrderType.DelieverRes)
+                    {
+                        ResourceStorage resStorage = nowOrder.moveTarget.GetComponent<ResourceStorage>();
+                        if(resStorage != null) // Если цель - склад ресурсов
+                        {
+                            if(resStorage.playerNumber == playerNumber)
+                            {
+                                resStorage.TakeResource(resourceInHands);
+                                resourceInHands = ResourceType.None;
+                            }
+                        }
                     }
                     else
                     {
@@ -72,6 +142,10 @@ public class UnitAI : Unit
                     }
                 }          
             }
+        }
+        else
+        {
+            timeToGather = gatherTime;
         }
 
     }
@@ -112,6 +186,16 @@ public class UnitAI : Unit
 
     public void FinishOrder(bool cancelBuild_)
     {
+        if(nowOrder.orderType == UnitOrder.OrderType.Gather)
+        {
+            if(nowOrder.moveTarget.GetComponent<ResourceField>())
+            {
+                if(nowOrder.moveTarget.GetComponent<ResourceField>().busedBy == this)
+                {
+                    nowOrder.moveTarget.GetComponent<ResourceField>().busedBy = null;
+                }
+            }
+        }
         if(cancelBuild_)
         {
             if(nowOrder.orderType == UnitOrder.OrderType.Build)
@@ -127,6 +211,8 @@ public class UnitAI : Unit
 
     public void AddOrder(UnitOrder.OrderType orderType_, Vector2 positionToMove_, Transform target_, int buildingIndex_ = -1)
     {
+        if (orderType_ == UnitOrder.OrderType.Gather && !isCanGather) return;
+
         UnitOrder newOrder = new UnitOrder();
         newOrder.orderType = orderType_;
         newOrder.movePosition = positionToMove_;
@@ -136,6 +222,66 @@ public class UnitAI : Unit
         if (newOrder.orderType == UnitOrder.OrderType.Attack) attackTarget = target_.GetComponent<Unit>();
 
         orders.Add(newOrder);
+    }
+
+    public void FindNearestResourceStorage()
+    {
+        ResourceStorage[] allStorages = FindObjectsOfType<ResourceStorage>();
+        List<ResourceStorage> myStorages = new List<ResourceStorage>();
+        for(int i = 0; i < allStorages.Length; i++)
+        {
+            if(allStorages[i].playerNumber == playerNumber)
+            {
+                myStorages.Add(allStorages[i]);
+            }
+        }
+
+        ResourceStorage nearestResourceStorage = null;
+        float minDst = 999999999;
+        for(int i = 0; i < myStorages.Count; i++)
+        {
+            float curDst = Vector2.Distance(transform.position, myStorages[i].transform.position);
+            if(curDst < minDst)
+            {
+                nearestResourceStorage = myStorages[i];
+                minDst = curDst;
+            }
+        }
+
+        if(nearestResourceStorage != null)
+        {
+            FinishOrder(true);
+            AddOrder(UnitOrder.OrderType.DelieverRes, nearestResourceStorage.transform.position, nearestResourceStorage.transform);
+        }
+    }
+
+    public void FindNearestResourceField(ResourceField exception_ = null, bool exceptBused = false, float maxDistance = 4)
+    {       
+        ResourceField[] allFields = FindObjectsOfType<ResourceField>();
+
+        ResourceField nearestResourceField = null;
+        float minDst = 999999999;
+        for (int i = 0; i < allFields.Length; i++)
+        {
+            if (exceptBused && allFields[i].busedBy != null) continue;
+            if (allFields[i].resourceType != ResourceType.Ore) continue; 
+
+            float curDst = Vector2.Distance(transform.position, allFields[i].transform.position);
+            if (curDst < minDst && curDst <= maxDistance)
+            {
+                if(exception_ == null || exception_ != allFields[i])
+                {
+                    nearestResourceField = allFields[i];
+                    minDst = curDst;
+                }
+            }
+        }
+
+        FinishOrder(true);
+        if (nearestResourceField != null)
+        {          
+            AddOrder(UnitOrder.OrderType.Gather, nearestResourceField.transform.position, nearestResourceField.transform);
+        }
     }
 
     public void TryToBuildConstruction()
@@ -159,7 +305,9 @@ public class UnitOrder
         Follow, // Преследовать (юнита)
         MoveAndAttack, // Двигаться и атаковать враждебных юнитов на пути (A - клик)
         Attack, // Атаковать (юнита)
-        Build // Строить здание
+        Build, // Строить здание
+        Gather, // Добывать
+        DelieverRes // Принести ресурс на базу
     }
 
     public bool isNull = true;

@@ -13,6 +13,8 @@ public class Unit : MonoBehaviour
     public int unitID = 0; // ID (номер) юнита в игре (Не уникальный на каждого. К примеру у двух пехотинцев будет одинаковый unitID)
     public int controlPanelIndex = 0; // Index (номер) контольной панели (Это та, что справа внизу)
     [Space(5)]
+    public bool isDamageCanBeTaken = true; // Может ли эта боевая единица получать урое
+    [Space(3)]
     public int health = 100; // Текущее здоровье
     public int healthMax = 100; // Максимальное здоровье
     public Image healthBar;
@@ -86,9 +88,31 @@ public class Unit : MonoBehaviour
     {
         localPlayer = FindObjectOfType<PlayerController>();
     }
+    public virtual PlayerCommander FindPlayerByNumber(int number_)
+    {
+
+        PlayerCommander[] players = FindObjectsOfType<PlayerController>();
+        int plIndexInArray = -1;
+        for(int i = 0; i < players.Length; i++)
+        {
+            if (players[i].playerNumber == number_)
+            {
+                plIndexInArray = i;
+                break;
+            }
+        }
+
+        if (plIndexInArray != -1)
+            return players[plIndexInArray];
+        else
+            return null;
+    }
+
 
     public virtual void AttackSomeone(Unit target_)
     {
+        if (!target_.isDamageCanBeTaken) return;
+
         attack.isHited = true;
         attack.timeToNextHit = attack.timeBtwHits;
         attack.currentHitsCount++;
@@ -104,6 +128,7 @@ public class Unit : MonoBehaviour
 
     public virtual void TakeDamage(int damage_)
     {
+        if (!isDamageCanBeTaken) return;
         health -= damage_;
     }
 
