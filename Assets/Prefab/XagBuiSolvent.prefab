@@ -88,7 +88,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4578114775823436563}
-  - component: {fileID: 569266162497399994}
+  - component: {fileID: 114951455889565438}
   - component: {fileID: 4578114775823436562}
   - component: {fileID: 4578114775823436560}
   m_Layer: 0
@@ -113,7 +113,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &569266162497399994
+--- !u!114 &114951455889565438
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,22 +122,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 4578114775823436564}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a39483445f74f14fa7f7c2aca1c4d4b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c77b71e881f33e4a9cbc0a6eb806504, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isInCameraView: 0
   unitIcon: {fileID: 21300036, guid: 07b977cea5cfc694f863f624b537754a, type: 3}
   playerNumber: 0
-  unitID: 0
+  unitID: 4
   controlPanelIndex: 0
+  isDamageCanBeTaken: 1
   health: 500
   healthMax: 500
+  healthBar: {fileID: 0}
+  attack:
+    attackName: Attack
+    damageByOneHit: 0
+    hitsByAttackCount: 1
+    currentHitsCount: 0
+    timeBtwHits: 0.2
+    timeToNextHit: 0.2
+    isHited: 0
+    timeBtwAttacks: 1
+    timeToNextAttack: 1
+    isAttacked: 0
+    attackDistance: 0
+  attackTarget: {fileID: 0}
   controlOutline: {fileID: 4578114773927355523}
   localPlayer: {fileID: 0}
   myUnitAI: {fileID: 0}
   myBuilding: {fileID: 0}
+  need: 1
+  placedOn: {fileID: 0}
   cursorSprite: {fileID: 21300014, guid: 1a9ec07b205d9a24ead477fd43e280a6, type: 3}
-  buildBlockDistance: 0.6
+  buildBlockDistance: 0.7
   buildingTime: 30
   buildingPrice:
     orePrice: 75
@@ -152,6 +169,10 @@ MonoBehaviour:
   unitCreatingIndex: 0
   units: []
   timeToCreateUnit: 10
+  resourceType: 1
+  unitIn: {fileID: 0}
+  timeToEndGather: 2.25
+  gatherTime: 2.25
 --- !u!212 &4578114775823436562
 SpriteRenderer:
   m_ObjectHideFlags: 0

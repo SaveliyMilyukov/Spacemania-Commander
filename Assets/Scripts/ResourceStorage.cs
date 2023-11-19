@@ -40,8 +40,10 @@ public class ResourceStorage : Building
                 {
                     if(u.resourceInHands != ResourceType.None)
                     {
-                        u.FindNearestResourceField();
+                        u.FinishOrder(true);
+                        u.AddOrder(UnitOrder.OrderType.Gather, u.lastResField.transform.position, u.lastResField);
                         TakeResource(u.resourceInHands);
+                        u.resourcesInHandsSprites[(int)u.resourceInHands - 1].SetActive(false);
                         u.resourceInHands = ResourceType.None;
                     }    
                 }
@@ -59,8 +61,10 @@ public class ResourceStorage : Building
                 {
                     if (u.resourceInHands != ResourceType.None)
                     {
-                        u.FindNearestResourceField();
+                        u.FinishOrder(true);
+                        u.AddOrder(UnitOrder.OrderType.Gather, u.lastResField.transform.position, u.lastResField);
                         TakeResource(u.resourceInHands);
+                        u.resourcesInHandsSprites[(int)u.resourceInHands - 1].SetActive(false);
                         u.resourceInHands = ResourceType.None;
                     }
                 }

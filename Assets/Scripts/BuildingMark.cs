@@ -11,6 +11,8 @@ public class BuildingMark : MonoBehaviour
     [SerializeField] private BuildingWorkplace workplacePrefab;
     [Space(5)]
     public SpriteRenderer render;
+    [Space(5)]
+    public ResourceField placedOn = null;
 
     public void TryToStartBuild(UnitAI builder_)
     {
@@ -21,6 +23,12 @@ public class BuildingMark : MonoBehaviour
             if(GameManager.instance.allUnitsAndBuildingsOnMap[i] != builder_)
             {
                 if (GameManager.instance.allUnitsAndBuildingsOnMap[i] == null) continue;
+
+                if(building.need == Building.BuildingNeed.OreField && GameManager.instance.allUnitsAndBuildingsOnMap[i].GetComponent<ResourceField>() ||
+                    building.need == Building.BuildingNeed.Geyser && GameManager.instance.allUnitsAndBuildingsOnMap[i].GetComponent<ResourceField>())
+                {
+                    continue;
+                }
 
                 float curDst = Vector2.Distance(transform.position, GameManager.instance.allUnitsAndBuildingsOnMap[i].transform.position);
                 if(curDst < buildBlockDistance)
@@ -42,6 +50,7 @@ public class BuildingMark : MonoBehaviour
             work.buildingPrefab = building.gameObject;
             work.playerNumber = playerNumber;
             work.SetBuildTime(building.buildingTime);
+            work.placedOn = placedOn;
 
             if (PlayerController.localPlayer.unitsControlling.Contains(builder_)) PlayerController.localPlayer.unitsControlling.Remove(builder_);
             if (PlayerController.localPlayer.unitsAndConstructions.Contains(builder_)) PlayerController.localPlayer.unitsAndConstructions.Remove(builder_);

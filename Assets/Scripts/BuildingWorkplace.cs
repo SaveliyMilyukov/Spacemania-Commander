@@ -12,6 +12,8 @@ public class BuildingWorkplace : Unit
     [Space(5)]
     [SerializeField] bool autoBuild = false;
     [SerializeField]Image progressBar;
+    [Space(5)]
+    public ResourceField placedOn = null;
 
     public override void Awake()
     {
@@ -65,6 +67,7 @@ public class BuildingWorkplace : Unit
 
         Building b = Instantiate(buildingPrefab, transform.position, Quaternion.identity).GetComponent<Building>();
         b.playerNumber = playerNumber;
+        b.placedOn = placedOn;
 
         if(PlayerController.localPlayer.unitsAndConstructions.Contains(this)) PlayerController.localPlayer.unitsAndConstructions.Remove(this);
         PlayerController.localPlayer.UpdateUnits();

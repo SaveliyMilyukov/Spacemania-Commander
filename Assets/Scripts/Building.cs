@@ -3,7 +3,14 @@ using UnityEngine;
 
 public class Building : Unit
 {
+    public enum BuildingNeed
+    {
+        None, OreField, Geyser
+    }
+
     [Header("Building")]
+    public BuildingNeed need;
+    public ResourceField placedOn = null;
     [Header("Build Mode")]
     public Sprite cursorSprite;
     public float buildBlockDistance = 1f;
@@ -155,6 +162,13 @@ public class CreateUnit
 [System.Serializable]
 public class ResourcePrice
 {
+    public ResourcePrice(int orePrice_, int gasPrice_, int limitPrice_)
+    {
+        orePrice = orePrice_;
+        gasPrice = gasPrice_;
+        limitPrice = limitPrice_;
+    }
+
     public int orePrice = 50;
     public int gasPrice = 0;
     public int limitPrice = 0;

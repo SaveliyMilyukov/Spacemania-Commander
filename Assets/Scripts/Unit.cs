@@ -35,6 +35,10 @@ public class Unit : MonoBehaviour
         myUnitAI = GetComponent<UnitAI>();
         myBuilding = GetComponent<Building>();
 
+        if (GameManager.instance == null) GameManager.instance = FindObjectOfType<GameManager>();
+
+        GameManager.instance.UpdateAllUnits();
+
         FindLocalPlayer();
     }
 
@@ -42,7 +46,7 @@ public class Unit : MonoBehaviour
     {
         if(health <= 0)
         {
-            Destroy(gameObject);
+            Die();
             return;
         }
         if(healthBar != null)
@@ -130,6 +134,12 @@ public class Unit : MonoBehaviour
     {
         if (!isDamageCanBeTaken) return;
         health -= damage_;
+    }
+
+    public virtual void Die()
+    {
+        PlayerController.localPlayer.UpdateUnits();
+        Destroy(gameObject, 0.05f);
     }
 
     public void SetControlOutline(bool state_)

@@ -43,6 +43,7 @@ public class PlayerCommander : MonoBehaviour
     {
         Unit[] allUnits = FindObjectsOfType<Unit>();
         unitsAndConstructions.Clear();
+        units.Clear();
         limitCurrent = 0;
         for(int i = 0; i < allUnits.Length; i++)
         {
@@ -90,5 +91,20 @@ public class PlayerCommander : MonoBehaviour
     {
         ore += resourcePrice_.orePrice;
         gas += resourcePrice_.gasPrice;
+    }
+
+    public virtual bool CheckPrice(ResourcePrice resourcePrice_)
+    {
+        bool result = false;
+
+        if (resourcePrice_.orePrice <= ore && resourcePrice_.gasPrice <= gas) result = true;
+
+        return result;
+    }
+
+    public void DecreaseResources(ResourcePrice resourcePrice_)
+    {
+        ore -= resourcePrice_.orePrice;
+        gas -= resourcePrice_.gasPrice;
     }
 }

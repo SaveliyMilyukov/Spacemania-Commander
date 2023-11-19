@@ -73,6 +73,8 @@ MonoBehaviour:
   myBuilding: {fileID: 0}
   busedBy: {fileID: 0}
   resourceType: 1
+  positionInGrid: {x: 0, y: 0}
+  spritePart: {fileID: 4841873817543819623}
 --- !u!58 &4841873816332587709
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -88,7 +90,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 0.6
 --- !u!1 &4841873817543819623
 GameObject:
   m_ObjectHideFlags: 0

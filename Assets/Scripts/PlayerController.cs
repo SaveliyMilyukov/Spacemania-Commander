@@ -42,6 +42,9 @@ public class PlayerController : PlayerCommander
     [Header("Build Constructions")]
     public int buildingChoosed = -1;
     [SerializeField] Image buildingUnderCursor;
+    [Space(5)]
+    public Vector2Int lastCursorPositionInGrid;
+    public Vector2 lastCursorPositionOnScreen;
 
     public static PlayerController localPlayer;
 
@@ -71,6 +74,11 @@ public class PlayerController : PlayerCommander
         cam = cameraObject.GetChild(0).GetComponent<Camera>();
 
         // 
+
+        GameManager.instance = FindObjectOfType<GameManager>();
+
+        lastCursorPositionInGrid = (Vector2Int)GameManager.instance.groundTilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition));
+        lastCursorPositionOnScreen = cam.WorldToScreenPoint(GameManager.instance.groundTilemap.CellToWorld((Vector3Int)lastCursorPositionInGrid));
     }
 
 
@@ -111,6 +119,9 @@ public class PlayerController : PlayerCommander
                 orderButtons[i].isUsingOrder = false;                
             }
         }
+
+        lastCursorPositionInGrid = (Vector2Int)GameManager.instance.groundTilemap.WorldToCell(cam.ScreenToWorldPoint(Input.mousePosition));
+        lastCursorPositionOnScreen = cam.WorldToScreenPoint(GameManager.instance.groundTilemap.CellToWorld((Vector3Int)lastCursorPositionInGrid));     
     }
 
     private void FixedUpdate()
@@ -238,7 +249,7 @@ public class PlayerController : PlayerCommander
         {
             buildingUnderCursor.sprite = buildingsPrefabs[buildingChoosed].cursorSprite;
             buildingUnderCursor.color = Color.white;
-            buildingUnderCursor.transform.position = Input.mousePosition;
+            buildingUnderCursor.transform.position = lastCursorPositionOnScreen;
         }
     }
 
@@ -256,7 +267,6 @@ public class PlayerController : PlayerCommander
         {
             if(GameManager.instance.allUnitsAndBuildingsOnMap[i] == null)
             {
-                i--;
                 continue;
             }
 
@@ -297,12 +307,10 @@ public class PlayerController : PlayerCommander
                 ResourceField rs = nearestUnit.GetComponent<ResourceField>();
                 if(rs != null)
                 {
-                    print("GATHER!");
                     order = UnitOrder.OrderType.Gather;
                 }
                 else
                 {
-                    print("fu...");
                     order = UnitOrder.OrderType.Follow;
                 }
             }
@@ -332,8 +340,6 @@ public class PlayerController : PlayerCommander
         {
             if (unitsAndConstructions[i] == null)
             {
-                unitsAndConstructions.Remove(unitsAndConstructions[i]);
-                i--;
                 continue;
             }
 
@@ -382,6 +388,7 @@ public class PlayerController : PlayerCommander
         {
             for (int i = 0; i < unitsControlling.Count; i++)// Снимаем выделение с уже выделенных юнитов
             {
+                if (unitsControlling[i] == null) continue;
                 unitsControlling[i].SetControlOutline(false);
                 if (unitsControlling[i].myBuilding != null) unitsControlling[i].myBuilding.SetRallyPointVision(false);
             }
@@ -389,9 +396,10 @@ public class PlayerController : PlayerCommander
 
             for (int i = 0; i < unitsAndConstructions.Count; i++)
             {
+                if (unitsAndConstructions[i] == null) continue;
                 // Если юнит в поле зрения игрока, а также это такой же юнит, как и тот, на которого мы кликнули
                 // Пример: мы кликнули на пехотинца, и если в поле зрения есть пехотинец, то он тоже выделяется
-                if(unitsAndConstructions[i].isInCameraView && unitsAndConstructions[i].unitID == nearestUnit.unitID) 
+                if (unitsAndConstructions[i].isInCameraView && unitsAndConstructions[i].unitID == nearestUnit.unitID) 
                 {                  
                     unitsControlling.Add(unitsAndConstructions[i]);
                     unitsAndConstructions[i].SetControlOutline(true);
@@ -410,6 +418,7 @@ public class PlayerController : PlayerCommander
 
             for (int i = 0; i < unitsAndConstructions.Count; i++)
             {
+                if (unitsAndConstructions[i] == null) continue;
                 // Если юнит в поле зрения игрока, а также это такой же юнит, как и тот, на которого мы кликнули
                 // Пример: мы кликнули на пехотинца, и если в поле зрения есть пехотинец, то он тоже выделяется
                 if (unitsAndConstructions[i].isInCameraView && unitsAndConstructions[i].unitID == nearestUnit.unitID)
@@ -427,6 +436,7 @@ public class PlayerController : PlayerCommander
         {
             for(int i = 0; i < unitsControlling.Count; i++)// Снимаем выделение с уже выделенных юнитов
             {
+                if (unitsControlling[i] == null) continue;
                 unitsControlling[i].SetControlOutline(false);
                 if (unitsControlling[i].myBuilding != null) unitsControlling[i].myBuilding.SetRallyPointVision(false);
             }
@@ -523,6 +533,22 @@ public class PlayerController : PlayerCommander
         buildingUnderCursor.SetNativeSize();
     }
 
+    public void MutateTo(int unitIndex_)
+    {
+        for(int i = 0; i < unitsControlling.Count; i++)
+        {
+            if(unitsControlling[i].GetComponent<XagLarva>())
+            {
+                XagLarva larva = unitsControlling[i].GetComponent<XagLarva>();
+                if(!larva.isMutating)
+                {
+                    larva.TryToStartMutation(unitIndex_);
+                    break;
+                }
+            }
+        }
+    }
+
     public void OrderToBuild()
     {
         if (buildingChoosed < 0) return;
@@ -548,12 +574,38 @@ public class PlayerController : PlayerCommander
         Vector3Int cellPos = GameManager.instance.groundTilemap.WorldToCell(cursorPos);
         Vector3 constructionPosition = GameManager.instance.groundTilemap.CellToWorld(cellPos);
 
+        ResourceField placedOn = null;
+        bool isCanBePlaced = false;
+        if(buildingsPrefabs[buildingChoosed].need == Building.BuildingNeed.None)
+        {
+            isCanBePlaced = true;
+        }
+        else
+        {
+            for(int i = 0; i < GameManager.instance.resourceFields.Length; i++)
+            {
+                if(buildingsPrefabs[buildingChoosed].need == Building.BuildingNeed.OreField && GameManager.instance.resourceFields[i].resourceType == ResourceType.Ore ||
+                    buildingsPrefabs[buildingChoosed].need == Building.BuildingNeed.Geyser && GameManager.instance.resourceFields[i].resourceType == ResourceType.Gas)
+                {
+                    if(cellPos == (Vector3Int)GameManager.instance.resourceFields[i].positionInGrid)
+                    {
+                        isCanBePlaced = true;
+                        placedOn = GameManager.instance.resourceFields[i];
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!isCanBePlaced) return;
+
         BuildingMark mark = Instantiate(buildingMarkPrefab, constructionPosition, Quaternion.identity);
         mark.building = buildingsPrefabs[buildingChoosed];
         mark.playerNumber = playerNumber;
         mark.render.sprite = buildingsPrefabs[buildingChoosed].cursorSprite;
         mark.buildingPrice = buildingsPrefabs[buildingChoosed].buildingPrice;
         mark.buildBlockDistance = buildingsPrefabs[buildingChoosed].buildBlockDistance;
+        mark.placedOn = placedOn;
 
         if (!Input.GetKey(KeyCode.LeftShift)) builder.ClearOrders(true);
         builder.AddOrder(UnitOrder.OrderType.Build, mark.transform.position, mark.transform, buildingChoosed);
@@ -562,5 +614,10 @@ public class PlayerController : PlayerCommander
         gas -= buildingsPrefabs[buildingChoosed].buildingPrice.gasPrice;
 
         if(!Input.GetKey(KeyCode.LeftShift)) buildingChoosed = -1;
+    }
+
+    public void ReCheckBuildingPosition()
+    {
+
     }
 }

@@ -11,10 +11,11 @@ public class UnitAI : Unit
     [SerializeField] Vector2 targetPosition;
     [Space(5)]
     [Header("Moving")]
-    [SerializeField] float moveSpeed = 5f;
+    public float moveSpeed = 5f;
     [Header("Gathering")]
     public bool isCanGather = false;
     public ResourceType resourceInHands = ResourceType.None;
+    public GameObject[] resourcesInHandsSprites;
     [SerializeField] float gatherTime = 7.5f;
     [SerializeField] float timeToGather = 7.5f;
     public Transform lastResField;
@@ -102,6 +103,7 @@ public class UnitAI : Unit
                                         {
                                             resField.busedBy = null;
                                             resourceInHands = ResourceType.Ore;
+                                            resourcesInHandsSprites[(int)resourceInHands - 1].SetActive(true);
                                             resField.health -= 8;
                                             if(orders.Count < 2) FindNearestResourceStorage();
                                         }
@@ -115,7 +117,7 @@ public class UnitAI : Unit
                                 }
                                 else
                                 {
-                                    FindNearestResourceField(resField, true);
+                                    FindNearestResourceField(resField.resourceType, resField, true);
                                 }
                             }
                         }
@@ -132,6 +134,7 @@ public class UnitAI : Unit
                             if(resStorage.playerNumber == playerNumber)
                             {
                                 resStorage.TakeResource(resourceInHands);
+                                resourcesInHandsSprites[(int)resourceInHands - 1].SetActive(false);
                                 resourceInHands = ResourceType.None;
                             }
                         }
@@ -255,7 +258,7 @@ public class UnitAI : Unit
         }
     }
 
-    public void FindNearestResourceField(ResourceField exception_ = null, bool exceptBused = false, float maxDistance = 4)
+    public void FindNearestResourceField(ResourceType resourceType_, ResourceField exception_ = null, bool exceptBused = false, float maxDistance = 7)
     {       
         ResourceField[] allFields = FindObjectsOfType<ResourceField>();
 
@@ -264,7 +267,10 @@ public class UnitAI : Unit
         for (int i = 0; i < allFields.Length; i++)
         {
             if (exceptBused && allFields[i].busedBy != null) continue;
-            if (allFields[i].resourceType != ResourceType.Ore) continue; 
+            if (resourceType_ != ResourceType.None)
+            {
+                if (resourceType_ != allFields[i].resourceType) continue;
+            }
 
             float curDst = Vector2.Distance(transform.position, allFields[i].transform.position);
             if (curDst < minDst && curDst <= maxDistance)
