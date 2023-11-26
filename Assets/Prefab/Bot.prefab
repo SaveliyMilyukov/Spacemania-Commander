@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7432602040719318722
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7432602040719318724}
+  - component: {fileID: 7432602040719318725}
+  m_Layer: 0
+  m_Name: Bot
+  m_TagString: Untagged
+  m_Icon: {fileID: 1206586993520771344, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7432602040719318724
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7432602040719318722}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7432602040719318725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7432602040719318722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fa53cd05677d1048b6d769b33d5e36a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerNumber: 0
+  playerTeam: -1
+  ore: 50
+  gas: 0
+  limitCurrent: 0
+  limitMax: 15
+  unitsAndConstructions: []
+  constructions: []
+  units: []
+  unitsControlling: []
+  buildingsPrefabs:
+  - {fileID: 4578114775823436561, guid: f9bae335a099b154681fb8d8b7f5012e, type: 3}
+  - {fileID: 74543058929142782, guid: 6771f3887f8a4df40b31b0b27f8bf20d, type: 3}
+  - {fileID: 114951455889565438, guid: 5c9eb8dbd9ad5e6408659fcd370fb07c, type: 3}
+  buildingMarkPrefab: {fileID: 2906835029143144948, guid: 6f5baa5544e89914fb43e64dbbf288ef,
+    type: 3}
+  isBot: 0
+  currentBotAction: 0
+  lastCycleState: -1
+  lairs: []
+  larvas: []

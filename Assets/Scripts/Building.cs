@@ -112,7 +112,7 @@ public class Building : Unit
         Unit u = Instantiate(units[unitCreatingIndex].unitPrefab, spawningPosition, Quaternion.identity).GetComponent<Unit>();
         u.playerNumber = playerNumber;
         u.GetComponent<UnitAI>().AddOrder(UnitOrder.OrderType.Move, rallyPoint, null);
-        PlayerController.localPlayer.UpdateUnits();
+        myPlayer.UpdateUnits();
     }
 
     public virtual void OrderToBuildUnit(int unitIndex_)
@@ -122,9 +122,9 @@ public class Building : Unit
         if (units.Length <= 0 || unitIndex_ >= units.Length || unitIndex_ < 0) return;
 
         // Проверка цены юнита
-        if (PlayerController.localPlayer.ore < units[unitIndex_].unitPrice.orePrice || // Если не хватант руды
-            PlayerController.localPlayer.gas < units[unitIndex_].unitPrice.gasPrice || // Или не хватает газа
-            PlayerController.localPlayer.limitMax - PlayerController.localPlayer.limitCurrent < units[unitIndex_].unitPrice.limitPrice) // Или нет доступного лимита
+        if (myPlayer.ore < units[unitIndex_].unitPrice.orePrice || // Если не хватант руды
+            myPlayer.gas < units[unitIndex_].unitPrice.gasPrice || // Или не хватает газа
+            myPlayer.limitMax - myPlayer.limitCurrent < units[unitIndex_].unitPrice.limitPrice) // Или нет доступного лимита
         {
             return; // Выходим из функции (соответственно никого не заказываем)
         }
@@ -133,9 +133,9 @@ public class Building : Unit
         if (isBuildingUnit) return; // Выходим из функции, если какой-либо юнит уже создается (соответственно никого не заказываем)
 
         // Отнимаем цену на юнита
-        PlayerController.localPlayer.ore -= units[unitIndex_].unitPrice.orePrice; // Отнимаем руду
-        PlayerController.localPlayer.gas -= units[unitIndex_].unitPrice.gasPrice; // Отнимаем газ
-        PlayerController.localPlayer.limitCurrent += units[unitIndex_].unitPrice.limitPrice; // Прибавляем лимит (В общем делаем бо-бо ;D)
+        myPlayer.ore -= units[unitIndex_].unitPrice.orePrice; // Отнимаем руду
+        myPlayer.gas -= units[unitIndex_].unitPrice.gasPrice; // Отнимаем газ
+        myPlayer.limitCurrent += units[unitIndex_].unitPrice.limitPrice; // Прибавляем лимит (В общем делаем бо-бо ;D)
 
         // Нанимаем юнита
         isBuildingUnit = true;

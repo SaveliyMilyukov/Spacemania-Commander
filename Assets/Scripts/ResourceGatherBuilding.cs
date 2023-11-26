@@ -112,8 +112,14 @@ public class ResourceGatherBuilding : Building
     {
         if (placedOn != null)
         {
+            placedOn.buildingBuildedOn = this;
             placedOn.spritePart.SetActive(false);
         }
+    }
+
+    public void OnDestroy()
+    {
+        placedOn.buildingBuildedOn = null;
     }
 
     public override void Die()

@@ -15,6 +15,7 @@ public class PlayerCommander : MonoBehaviour
     public const int gameLimitMax = 300; // Какой вообще может быть максимальный лимит у игрока в игре (в StarCraft абсолютный лимит - 200)
     [Header("Units")]
     public List<Unit> unitsAndConstructions;
+    public List<Building> constructions;
     public List<UnitAI> units;
     [Space(5)]
     public List<Unit> unitsControlling;
@@ -22,16 +23,12 @@ public class PlayerCommander : MonoBehaviour
     public Building[] buildingsPrefabs;
     [Space(5)]
     public BuildingMark buildingMarkPrefab;
-    
+
+    [HideInInspector] public bool isBot = false;
 
     public virtual void Awake()
     {
         UpdateUnits();
-    }
-
-    public virtual void Start()
-    {
-
     }
 
     public virtual void Update()
@@ -54,6 +51,10 @@ public class PlayerCommander : MonoBehaviour
                 {
                     units.Add(allUnits[i].GetComponent<UnitAI>());
                     limitCurrent += allUnits[i].GetComponent<UnitAI>().limitPrice;
+                }
+                else if(allUnits[i].GetComponent<Building>())
+                {
+                    constructions.Add(allUnits[i].GetComponent<Building>());
                 }
             }
         }
@@ -91,6 +92,8 @@ public class PlayerCommander : MonoBehaviour
     {
         ore += resourcePrice_.orePrice;
         gas += resourcePrice_.gasPrice;
+
+        Debug.Log("ReturnResourcesByPrice!\nSplendide:" + resourcePrice_.orePrice + "\nOleum:" + resourcePrice_.gasPrice);
     }
 
     public virtual bool CheckPrice(ResourcePrice resourcePrice_)

@@ -332,6 +332,8 @@ public class PlayerController : PlayerCommander
     
     private void ChooseNearestUnit()
     {
+        if (unitsAndConstructions.Count <= 0) return;
+
         Vector2 cursorPosition = cam.ScreenToWorldPoint(Input.mousePosition); // Считывание положения курсора в мировых координатах
 
         Unit nearestUnit = unitsAndConstructions[0];

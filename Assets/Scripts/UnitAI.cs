@@ -50,12 +50,27 @@ public class UnitAI : Unit
                     targetPosition = nowOrder.movePosition;
                     break;
                 case UnitOrder.OrderType.Follow:
+                    if (nowOrder.moveTarget == null)
+                    {
+                        FinishOrder(false);
+                        return;
+                    }
                     targetPosition = nowOrder.moveTarget.position;
                     break;
                 case UnitOrder.OrderType.Attack:
+                    if (nowOrder.moveTarget == null)
+                    {
+                        FinishOrder(false);
+                        return;
+                    }
                     targetPosition = nowOrder.moveTarget.position;
                     break;
                 case UnitOrder.OrderType.Build:
+                    if(nowOrder.moveTarget == null)
+                    {
+                        FinishOrder(false);
+                        return;
+                    }
                     targetPosition = nowOrder.moveTarget.position;
                     break;
                 case UnitOrder.OrderType.Gather:
@@ -89,7 +104,6 @@ public class UnitAI : Unit
                     }
                     else if (nowOrder.orderType == UnitOrder.OrderType.Gather)
                     {
-                        print("GATHER");
                         if(resourceInHands != ResourceType.Ore)
                         {
                             ResourceField resField = nowOrder.moveTarget.GetComponent<ResourceField>();
@@ -123,7 +137,7 @@ public class UnitAI : Unit
                         }
                         else
                         {
-                            if (orders.Count < 2) FindNearestResourceStorage();
+                            FindNearestResourceStorage();
                         }
                     }
                     else if (nowOrder.orderType == UnitOrder.OrderType.DelieverRes)
@@ -174,13 +188,17 @@ public class UnitAI : Unit
     }
     public void ClearOrders(bool finishOrder_)
     {
-        for(int i = 0; i < orders.Count; i++)
+        if(orders.Count > 1)
         {
-            if(orders[i].orderType == UnitOrder.OrderType.Build)
+            for(int i = 1; i < orders.Count; i++)
             {
-                orders[i].moveTarget.gameObject.GetComponent<BuildingMark>().CancelBuild();
+                if(orders[i].orderType == UnitOrder.OrderType.Build)
+                {
+                    orders[i].moveTarget.gameObject.GetComponent<BuildingMark>().CancelBuild();
+                }
             }
         }
+
         orders.Clear();
         attackTarget = null;
 
@@ -259,18 +277,30 @@ public class UnitAI : Unit
     }
 
     public void FindNearestResourceField(ResourceType resourceType_, ResourceField exception_ = null, bool exceptBused = false, float maxDistance = 7)
-    {       
+    {
         ResourceField[] allFields = FindObjectsOfType<ResourceField>();
 
         ResourceField nearestResourceField = null;
         float minDst = 999999999;
         for (int i = 0; i < allFields.Length; i++)
         {
-            if (exceptBused && allFields[i].busedBy != null) continue;
-            if (resourceType_ != ResourceType.None)
+            if (exceptBused)
+            {
+                if(allFields[i].buildingBuildedOn != null)
+                {
+                    if (allFields[i].buildingBuildedOn.unitIn != null) continue;
+                }
+                else
+                {
+                    if (allFields[i].busedBy != null) continue;
+                }
+            }
+            if (resourceType_ != ResourceType.None) // None = Any
             {
                 if (resourceType_ != allFields[i].resourceType) continue;
             }
+
+            if (allFields[i].resourceType == ResourceType.Gas && allFields[i].busedBy == null) continue; // Пропускаем гейзеры без построенного добывателя Олеума
 
             float curDst = Vector2.Distance(transform.position, allFields[i].transform.position);
             if (curDst < minDst && curDst <= maxDistance)
@@ -294,7 +324,7 @@ public class UnitAI : Unit
     {
         BuildingMark mark = nowOrder.moveTarget.GetComponent<BuildingMark>();
         mark.playerNumber = playerNumber;
-        mark.building = PlayerController.localPlayer.buildingsPrefabs[nowOrder.buildingIndex];
+        mark.building = myPlayer.buildingsPrefabs[nowOrder.buildingIndex];
 
         mark.TryToStartBuild(this);
         FinishOrder(false);

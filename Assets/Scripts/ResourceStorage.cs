@@ -1,13 +1,14 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class ResourceStorage : Building
 {
-    PlayerCommander myPlayer;
-
+    public ResourceField[] nearestResourceFields;
     public override void Awake()
     {
         base.Awake();
         Invoke(nameof(SetPlayer), 0.1f);
+        Invoke(nameof(FindNearestResFields), 0.25f);
     }
 
     public void TakeResource(ResourceType resourceType_)
@@ -29,46 +30,70 @@ public class ResourceStorage : Building
         myPlayer = FindPlayerByNumber(playerNumber);
     }
 
-    public void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.GetComponent<UnitAI>())
-        {
-            UnitAI u = collision.GetComponent<UnitAI>();
-            if(u.playerNumber == playerNumber)
-            {            
-                if(u.isCanGather)
-                {
-                    if(u.resourceInHands != ResourceType.None)
-                    {
-                        u.FinishOrder(true);
-                        u.AddOrder(UnitOrder.OrderType.Gather, u.lastResField.transform.position, u.lastResField);
-                        TakeResource(u.resourceInHands);
-                        u.resourcesInHandsSprites[(int)u.resourceInHands - 1].SetActive(false);
-                        u.resourceInHands = ResourceType.None;
-                    }    
-                }
-            }
-        }
-    }
-    public void OnCollisionEnter2D(Collision2D collision)
+    public void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.transform.GetComponent<UnitAI>())
         {
             UnitAI u = collision.transform.GetComponent<UnitAI>();
-            if (u.playerNumber == playerNumber)
+            if (u.isCanGather)
             {
-                if (u.isCanGather)
+                GathererCollision(u);
+            }
+        }
+    }
+    public void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.transform.GetComponent<UnitAI>())
+        {
+            UnitAI u = collision.transform.GetComponent<UnitAI>();
+            if(u.isCanGather)
+            {
+                GathererCollision(u);
+            }
+        }
+    }
+
+    public void GathererCollision(UnitAI g)
+    {
+        print("GathererCollision");
+
+        if (g.playerNumber == playerNumber)
+        {
+            if (g.isCanGather)
+            {
+                if(g.nowOrder.moveTarget == transform)
                 {
-                    if (u.resourceInHands != ResourceType.None)
+                    print("target is me!");
+                    g.FinishOrder(true);
+                    if (g.resourceInHands != ResourceType.None)
                     {
-                        u.FinishOrder(true);
-                        u.AddOrder(UnitOrder.OrderType.Gather, u.lastResField.transform.position, u.lastResField);
-                        TakeResource(u.resourceInHands);
-                        u.resourcesInHandsSprites[(int)u.resourceInHands - 1].SetActive(false);
-                        u.resourceInHands = ResourceType.None;
+                        if (g.lastResField != null)
+                            g.AddOrder(UnitOrder.OrderType.Gather, g.lastResField.transform.position, g.lastResField);
+                        else
+                            g.FindNearestResourceField(g.resourceInHands);
+                        TakeResource(g.resourceInHands);
+                        g.resourcesInHandsSprites[(int)g.resourceInHands - 1].SetActive(false);
+                        g.resourceInHands = ResourceType.None;
                     }
                 }
             }
         }
+    }
+
+    public void FindNearestResFields()
+    {
+        ResourceField[] allResourceFields = GameManager.instance.resourceFields;
+        List<ResourceField> resourceFieldsFound = new List<ResourceField>();
+
+        for(int i = 0; i < allResourceFields.Length; i++)
+        {
+            float curDst = Vector2.Distance(transform.position, allResourceFields[i].transform.position);
+            if(curDst <= 12f)
+            {
+                resourceFieldsFound.Add(allResourceFields[i]);
+            }
+        }
+
+        nearestResourceFields = resourceFieldsFound.ToArray();
     }
 }

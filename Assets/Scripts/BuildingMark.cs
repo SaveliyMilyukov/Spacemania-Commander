@@ -14,6 +14,24 @@ public class BuildingMark : MonoBehaviour
     [Space(5)]
     public ResourceField placedOn = null;
 
+    bool isBuildingStarted = false;
+
+    private void Update()
+    {
+        if(placedOn != null)
+        {
+            if(placedOn.buildingBuildedOn != null ||
+                placedOn.buildingMarkOn != null && placedOn.buildingMarkOn != this)
+            {
+                CancelBuild();
+            }
+            else
+            {
+                placedOn.buildingMarkOn = this;
+            }
+        }
+    }
+
     public void TryToStartBuild(UnitAI builder_)
     {
         // Проверка, можно ли строить
@@ -33,16 +51,18 @@ public class BuildingMark : MonoBehaviour
                 float curDst = Vector2.Distance(transform.position, GameManager.instance.allUnitsAndBuildingsOnMap[i].transform.position);
                 if(curDst < buildBlockDistance)
                 {
-                    Debug.Log("BlockDistance: " + curDst + "/" + buildBlockDistance + " (" + GameManager.instance.allUnitsAndBuildingsOnMap[i].gameObject.name + ")");
+                    //Debug.Log("BlockDistance: " + curDst + "/" + buildBlockDistance + " (" + GameManager.instance.allUnitsAndBuildingsOnMap[i].gameObject.name + ")");
                     isCanStartBuild = false;
                     break;
                 }
             }
         }
 
-        Debug.Log(gameObject.name + " isCanStartBuild: " + isCanStartBuild);
+        //Debug.Log(gameObject.name + " isCanStartBuild: " + isCanStartBuild);
         if(isCanStartBuild)
         {
+            isBuildingStarted = true;
+
             Vector3Int cellPos = GameManager.instance.groundTilemap.WorldToCell(transform.position);
             Vector3 constructionPosition = GameManager.instance.groundTilemap.CellToWorld(cellPos);
 
@@ -52,25 +72,31 @@ public class BuildingMark : MonoBehaviour
             work.SetBuildTime(building.buildingTime);
             work.placedOn = placedOn;
 
-            if (PlayerController.localPlayer.unitsControlling.Contains(builder_)) PlayerController.localPlayer.unitsControlling.Remove(builder_);
-            if (PlayerController.localPlayer.unitsAndConstructions.Contains(builder_)) PlayerController.localPlayer.unitsAndConstructions.Remove(builder_);
-            if (PlayerController.localPlayer.units.Contains(builder_)) PlayerController.localPlayer.units.Remove(builder_);
+            PlayerCommander pl = Unit.FindPlayerByNumber(playerNumber);
+
+            if (pl.unitsControlling.Contains(builder_)) pl.unitsControlling.Remove(builder_);
+            if (pl.unitsAndConstructions.Contains(builder_)) pl.unitsAndConstructions.Remove(builder_);
+            if (pl.units.Contains(builder_)) pl.units.Remove(builder_);
             Destroy(builder_.gameObject);
-            PlayerController.localPlayer.UpdateUnits();
+            pl.UpdateUnits();
             PlayerController.localPlayer.UpdateUnitsControllingIcons();
         }
         else
         {
-            PlayerController.localPlayer.ReturnResourcesByPrice(buildingPrice);
+            CancelBuild();
         }
 
         Destroy(gameObject);
+        enabled = false;
     }
 
     public void CancelBuild()
     {
-        PlayerController.localPlayer.ReturnResourcesByPrice(buildingPrice);
+        if (isBuildingStarted) return;
+
+        Unit.FindPlayerByNumber(playerNumber).ReturnResourcesByPrice(buildingPrice);
         Destroy(gameObject);
+        enabled = false;
     }
 
     public void OnDrawGizmos()

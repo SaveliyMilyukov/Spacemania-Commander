@@ -69,8 +69,9 @@ public class BuildingWorkplace : Unit
         b.playerNumber = playerNumber;
         b.placedOn = placedOn;
 
-        if(PlayerController.localPlayer.unitsAndConstructions.Contains(this)) PlayerController.localPlayer.unitsAndConstructions.Remove(this);
-        PlayerController.localPlayer.UpdateUnits();
+        if (placedOn != null) placedOn.spritePart.SetActive(false);
+        if(myPlayer.unitsAndConstructions.Contains(this)) myPlayer.unitsAndConstructions.Remove(this);
+        myPlayer.UpdateUnits();
 
         Destroy(gameObject);
     }

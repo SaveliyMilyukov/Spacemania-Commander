@@ -12,12 +12,16 @@ public class Unit : MonoBehaviour
     public int playerNumber; // playerNumber (номер) игрока, которому принадлежит данный юнит
     public int unitID = 0; // ID (номер) юнита в игре (Не уникальный на каждого. К примеру у двух пехотинцев будет одинаковый unitID)
     public int controlPanelIndex = 0; // Index (номер) контольной панели (Это та, что справа внизу)
+    [Space(3)]
+    public SpriteRenderer[] marksOfDifference; // Цветные пометки для различия юнитов, кто чей
     [Space(5)]
     public bool isDamageCanBeTaken = true; // Может ли эта боевая единица получать урое
     [Space(3)]
     public int health = 100; // Текущее здоровье
     public int healthMax = 100; // Максимальное здоровье
     public Image healthBar;
+    [Space(5)]
+    public EnemyDetector myEnemyDetector;
     [Space(5)]
     public UnitAttack attack;
     public Unit attackTarget;
@@ -27,6 +31,7 @@ public class Unit : MonoBehaviour
 
     [SerializeField] PlayerCommander localPlayer;
 
+    [HideInInspector] public PlayerCommander myPlayer;
     [HideInInspector] public UnitAI myUnitAI;
     [HideInInspector] public Building myBuilding;
 
@@ -35,11 +40,30 @@ public class Unit : MonoBehaviour
         myUnitAI = GetComponent<UnitAI>();
         myBuilding = GetComponent<Building>();
 
+        if(myEnemyDetector == null)
+        {
+            for(int i = 0; i < transform.childCount; i++)
+            {
+                if(transform.GetChild(i).GetComponent<EnemyDetector>())
+                {
+                    myEnemyDetector = transform.GetChild(i).GetComponent<EnemyDetector>();
+                    break;
+                }
+            }
+        }
+
+        if(myEnemyDetector != null)
+        {
+            myEnemyDetector.myUnit = this;
+        }
+
         if (GameManager.instance == null) GameManager.instance = FindObjectOfType<GameManager>();
 
         GameManager.instance.UpdateAllUnits();
 
         FindLocalPlayer();
+        Invoke(nameof(FindMyPlayer), 0.05f);
+        if(marksOfDifference.Length > 0) Invoke(nameof(SetColor), 0.175f);
     }
 
     public virtual void Update()
@@ -92,10 +116,14 @@ public class Unit : MonoBehaviour
     {
         localPlayer = FindObjectOfType<PlayerController>();
     }
-    public virtual PlayerCommander FindPlayerByNumber(int number_)
+    public virtual void FindMyPlayer()
     {
+        myPlayer = FindPlayerByNumber(playerNumber);
+    }
 
-        PlayerCommander[] players = FindObjectsOfType<PlayerController>();
+    public static PlayerCommander FindPlayerByNumber(int number_)
+    {
+        PlayerCommander[] players = FindObjectsOfType<PlayerCommander>();
         int plIndexInArray = -1;
         for(int i = 0; i < players.Length; i++)
         {
@@ -138,13 +166,24 @@ public class Unit : MonoBehaviour
 
     public virtual void Die()
     {
-        PlayerController.localPlayer.UpdateUnits();
+        myPlayer.UpdateUnits();
         Destroy(gameObject, 0.05f);
     }
 
-    public void SetControlOutline(bool state_)
+    public virtual void SetControlOutline(bool state_)
     {
         controlOutline.SetActive(state_);
+    }
+
+    public virtual void SetColor()
+    {
+        if (marksOfDifference.Length <= 0) return;
+        if (playerNumber < 0 || playerNumber >= GameManager.instance.playerColors.Length) return;
+
+        for(int i = 0; i < marksOfDifference.Length; i++)
+        {
+            marksOfDifference[i].color = GameManager.instance.playerColors[playerNumber];
+        }
     }
 
     public void OnBecameVisible()

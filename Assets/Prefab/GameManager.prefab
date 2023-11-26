@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &821598110803224783
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 821598110803224781}
+  - component: {fileID: 821598110803224780}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &821598110803224781
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 821598110803224783}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &821598110803224780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 821598110803224783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7993e8221e5429f4f9a0b33456eebb1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allUnitsAndBuildingsOnMap: []
+  resourceFields: []
+  groundTilemap: {fileID: 0}
+  playerColors:
+  - {r: 0.706, g: 0.07060001, b: 0.07060001, a: 1}
+  - {r: 0.08241204, g: 0.32827482, b: 0.82, a: 1}
+  - {r: 0.85300004, g: 0.85300004, b: 0.21495599, a: 1}
+  - {r: 0.29555732, g: 0.734, b: 0.26424003, a: 1}
+  - {r: 0.39197227, g: 0.151956, b: 0.804, a: 1}
+  - {r: 0.14429803, g: 0.7256128, b: 0.937, a: 1}
+  - {r: 0.881, g: 0.54927415, b: 0.259014, a: 1}
+  - {r: 0.6156664, g: 0.748, b: 0.02618002, a: 1}
+  - {r: 0.7490196, g: 0.02745099, b: 0.34013078, a: 1}
+  - {r: 0.17407994, g: 0.10240001, b: 0.64, a: 1}
+  - {r: 0.925, g: 0.7530888, b: 0.542975, a: 1}
+  - {r: 0.4660424, g: 0.797, b: 0.62600523, a: 1}

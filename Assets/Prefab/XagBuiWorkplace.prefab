@@ -133,10 +133,13 @@ MonoBehaviour:
   playerNumber: 0
   unitID: 6
   controlPanelIndex: 0
+  marksOfDifference:
+  - {fileID: 4562411094126602659}
   isDamageCanBeTaken: 1
   health: 100
   healthMax: 100
   healthBar: {fileID: 0}
+  myEnemyDetector: {fileID: 0}
   attack:
     attackName: Attack
     damageByOneHit: 7
@@ -152,6 +155,7 @@ MonoBehaviour:
   attackTarget: {fileID: 0}
   controlOutline: {fileID: 7042816824603803276}
   localPlayer: {fileID: 0}
+  myPlayer: {fileID: 0}
   myUnitAI: {fileID: 0}
   myBuilding: {fileID: 0}
   buildingPrefab: {fileID: 0}

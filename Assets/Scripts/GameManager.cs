@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     public Unit[] allUnitsAndBuildingsOnMap;
     public ResourceField[] resourceFields;
     public Tilemap groundTilemap;
+    [Space(5)]
+    public Color[] playerColors;
 
     public static GameManager instance;
 

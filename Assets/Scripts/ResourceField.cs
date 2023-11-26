@@ -8,6 +8,9 @@ public class ResourceField : Unit
     public Vector2Int positionInGrid;
     [Space(5)]
     public GameObject spritePart;
+    [Space(5)]
+    public ResourceGatherBuilding buildingBuildedOn;
+    public BuildingMark buildingMarkOn;
 
     public override void Awake()
     {

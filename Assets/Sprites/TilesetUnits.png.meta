@@ -15,6 +15,7 @@ TextureImporter:
     21300020: Xag_BuildingStage3
     21300022: Xag_BuildingStage4
     21300024: Xag_BigAnt
+    21300026: CMark_Xag_Soldier
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -334,13 +335,33 @@ TextureImporter:
         width: 27
         height: 13
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
       spriteID: 1fd9fab60f394a146aeb43e709288e5d
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CMark_Xag_Soldier
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 236
+        width: 7
+        height: 3
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 614069da769a60f46b8d129cbf806eb5
       vertices: []
       indices: 
       edges: []

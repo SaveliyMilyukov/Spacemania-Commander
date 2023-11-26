@@ -22,6 +22,8 @@ TextureImporter:
     21300034: UI_Ico_Extractor
     21300036: UI_Ico_Solvent
     21300038: UI_Build
+    21300040: UI_Ico_Soldier
+    21300042: UI_Ico_SoldierAnt
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -481,13 +483,53 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
       spriteID: 411858ab012c22c4f96c42ae2e408bef
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Ico_Soldier
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e57c862c0dffe31458378309a48515ac
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Ico_SoldierAnt
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 989847a92df29f449bdf4da76e1e4a2e
       vertices: []
       indices: 
       edges: []

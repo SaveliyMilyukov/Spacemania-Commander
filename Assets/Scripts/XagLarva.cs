@@ -29,9 +29,9 @@ public class XagLarva : UnitAI
         }
     }
 
-    public void TryToStartMutation(int unitIndex_)
+    public bool TryToStartMutation(int unitIndex_)
     {
-        if (isMutating) return;
+        if (isMutating) return false;
 
         PlayerCommander pl = FindPlayerByNumber(playerNumber);
         if (pl.CheckPrice(unitsCanMutate[unitIndex_].unitPrice))
@@ -42,6 +42,11 @@ public class XagLarva : UnitAI
             pl.DecreaseResources(unitsCanMutate[unitIndex_].unitPrice);
 
             eggSprite.SetActive(true);
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -65,6 +70,18 @@ public class XagLarva : UnitAI
         FindPlayerByNumber(playerNumber).ReturnResourcesByPrice(newPrice);
 
         Die();
+    }
+
+    public override void Die()
+    {
+        if (myPlayer.isBot) myPlayer.GetComponent<PlayerBot>().larvas.Remove(this);
+        base.Die();
+    }
+
+    public override void FindMyPlayer()
+    {
+        base.FindMyPlayer();
+        if(myPlayer.isBot) FindPlayerByNumber(playerNumber).GetComponent<PlayerBot>().larvas.Add(this);
     }
 }
 

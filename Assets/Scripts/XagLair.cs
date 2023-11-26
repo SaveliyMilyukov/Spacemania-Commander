@@ -3,7 +3,7 @@
 public class XagLair : ResourceStorage
 {
     [Header("Xag Lair")]
-    [SerializeField] private int larvas = 0;
+    public int larvas = 0;
     [SerializeField] private int larvasMax = 4;
     [SerializeField] private GameObject[] larvaEggs;
     [Space(5)]
@@ -15,7 +15,7 @@ public class XagLair : ResourceStorage
         base.Awake();
 
         RefreshEggsSprite();
-        timeToSpawnNextEgg = eggSpawnTime;
+        timeToSpawnNextEgg = eggSpawnTime;     
     }
    
     public override void Update()
@@ -52,8 +52,10 @@ public class XagLair : ResourceStorage
 
     public override void OrderToBuildUnit(int unitIndex_)
     {
+        if (myPlayer == null) FindMyPlayer();
+
         if (isBuildingUnit) return;
-        if (larvas <= 0 || PlayerController.localPlayer.ore < units[0].unitPrice.orePrice) return;
+        if (larvas <= 0 || myPlayer.ore < units[0].unitPrice.orePrice) return;
         larvas--;
         RefreshEggsSprite();
 
