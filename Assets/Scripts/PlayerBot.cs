@@ -66,7 +66,7 @@ public class PlayerBot : PlayerCommander
                 }
                 if(CheckPrice(buildingsPrefabs[2].buildingPrice)) // Если хватает денег на растворитель/экстрактор
                 {
-                    Debug.Log("|||||||||");
+                    //Debug.Log("|||||||||");
                     int orders = 0;
                     for(int i = 0; i < lairs.Length; i++)
                     {
@@ -107,18 +107,18 @@ public class PlayerBot : PlayerCommander
                         continue;
                     }
 
-                    Debug.Log("workers[" + i + "] (" + workers[i].gameObject.name + ")\nisCanGather: " + workers[i].isCanGather + "\nResource in hands:" + workers[i].resourceInHands);
+                    //Debug.Log("workers[" + i + "] (" + workers[i].gameObject.name + ")\nisCanGather: " + workers[i].isCanGather + "\nResource in hands:" + workers[i].resourceInHands);
                     if(workers[i].nowOrder.isNull)
                     {
-                        Debug.Log("wi");
+                       //Debug.Log("wi");
                         if(workers[i].resourceInHands == ResourceType.None)
                         {
-                            Debug.Log("w");
+                            //Debug.Log("w");
                             workers[i].FindNearestResourceField(ResourceType.None);
                         }
                         else
                         {
-                            Debug.Log("i");
+                            //Debug.Log("i");
                             workers[i].FindNearestResourceStorage();
                         }
                     }
@@ -153,7 +153,7 @@ public class PlayerBot : PlayerCommander
         if (ore < buildingsPrefabs[buildingIndex_].buildingPrice.orePrice ||
            gas < buildingsPrefabs[buildingIndex_].buildingPrice.gasPrice) return;
 
-        Debug.Log("OrderToNearestWorkerToBuild! (" + buildingIndex_ + " " + placePosition_ + ")");
+       // Debug.Log("OrderToNearestWorkerToBuild! (" + buildingIndex_ + " " + placePosition_ + ")");
 
         // Поиск рабочего для дачи приказа на строительство
         bool isBuilderFound = false;
@@ -180,7 +180,7 @@ public class PlayerBot : PlayerCommander
         }
        
         if (!isBuilderFound) return;
-        Debug.Log("builder Found!");
+        //Debug.Log("builder Found!");
 
         Vector3Int cellPos = GameManager.instance.groundTilemap.WorldToCell(placePosition_);
         Vector3 constructionPosition = GameManager.instance.groundTilemap.CellToWorld(cellPos);
@@ -209,7 +209,7 @@ public class PlayerBot : PlayerCommander
         }
 
         if (!isCanBePlaced) return;
-        Debug.Log("Is can be placed!!");
+        //Debug.Log("Is can be placed!!");
 
         BuildingMark mark = Instantiate(buildingMarkPrefab, constructionPosition, Quaternion.identity);
         mark.building = buildingsPrefabs[buildingIndex_];

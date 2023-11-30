@@ -6,6 +6,7 @@ public class Unit : MonoBehaviour
 
     [Header("General (Unit)")]
     public bool isInCameraView = false; // В поле зрения камеры?
+    [SerializeField] GameObject vision;
     [Space(5)]
     public Sprite unitIcon;
     [Space(5)]
@@ -21,10 +22,14 @@ public class Unit : MonoBehaviour
     public int healthMax = 100; // Максимальное здоровье
     public Image healthBar;
     [Space(5)]
+    public bool isDead = false;
+    [Space(5)]
     public EnemyDetector myEnemyDetector;
     [Space(5)]
     public UnitAttack attack;
     public Unit attackTarget;
+    [Space(3)]
+    public float mySize = 1;
     [Space(5)]
     [SerializeField] private GameObject controlOutline; // Обводка при выделении юнита
     
@@ -37,8 +42,18 @@ public class Unit : MonoBehaviour
 
     public virtual void Awake()
     {
+        if(vision != null) vision.SetActive(false);
         myUnitAI = GetComponent<UnitAI>();
         myBuilding = GetComponent<Building>();
+
+        if(GetComponent<BoxCollider2D>())
+        {
+            mySize = GetComponent<BoxCollider2D>().size.magnitude / 2;
+        }
+        else if(GetComponent<CircleCollider2D>())
+        {
+            mySize = GetComponent<CircleCollider2D>().radius;
+        }
 
         if(myEnemyDetector == null)
         {
@@ -70,15 +85,26 @@ public class Unit : MonoBehaviour
     {
         if(health <= 0)
         {
-            Die();
+            if (!isDead)
+            {
+                isDead = true;
+                Die();
+            }
             return;
         }
         if(healthBar != null)
         {
-            float h = health, hM = healthMax;
-            healthBar.fillAmount = h / hM;
-            if (h / hM == 1) healthBar.transform.parent.gameObject.SetActive(false);
-            else healthBar.transform.parent.gameObject.SetActive(true);
+            if(vision.activeSelf)
+            {
+                float h = health, hM = healthMax;
+                healthBar.fillAmount = h / hM;
+                if (h / hM == 1) healthBar.transform.parent.gameObject.SetActive(false);
+                else healthBar.transform.parent.gameObject.SetActive(true);
+            }
+            else
+            {
+                healthBar.transform.parent.gameObject.SetActive(false);
+            }
         }
 
         if(attack.isAttacked) // Если уже совершил атаку
@@ -103,8 +129,9 @@ public class Unit : MonoBehaviour
         {
             if(attackTarget != null)
             {
-                if(Vector2.Distance(transform.position, attackTarget.transform.position) < attack.attackDistance)
+                if(Vector2.Distance(transform.position, attackTarget.transform.position) < attack.attackDistance * attackTarget.mySize)
                 {
+                    print("distance is applyed");
                     AttackSomeone(attackTarget);
                 }
             }
@@ -118,32 +145,46 @@ public class Unit : MonoBehaviour
     }
     public virtual void FindMyPlayer()
     {
+        localPlayer = FindObjectOfType<PlayerController>();
         myPlayer = FindPlayerByNumber(playerNumber);
+
+        if(vision != null && !GetComponent<ResourceField>())
+        {
+            if(EnemyDetector.CheckAlliance(localPlayer, this))
+            {
+                vision.SetActive(true);
+            }
+            else
+            {
+                vision.SetActive(false);
+            }
+        }
+        else
+        {
+            Debug.LogWarning(gameObject.name + " unit vision: null!");
+        }
     }
 
     public static PlayerCommander FindPlayerByNumber(int number_)
     {
         PlayerCommander[] players = FindObjectsOfType<PlayerCommander>();
-        int plIndexInArray = -1;
         for(int i = 0; i < players.Length; i++)
         {
             if (players[i].playerNumber == number_)
             {
-                plIndexInArray = i;
-                break;
+                return players[i];
             }
         }
 
-        if (plIndexInArray != -1)
-            return players[plIndexInArray];
-        else
-            return null;
+        return null;
     }
 
 
     public virtual void AttackSomeone(Unit target_)
     {
         if (!target_.isDamageCanBeTaken) return;
+
+        Debug.Log("Attack!");
 
         attack.isHited = true;
         attack.timeToNextHit = attack.timeBtwHits;
@@ -166,8 +207,9 @@ public class Unit : MonoBehaviour
 
     public virtual void Die()
     {
-        myPlayer.UpdateUnits();
-        Destroy(gameObject, 0.05f);
+        isDead = true;
+        FindPlayerByNumber(playerNumber).UpdateUnits();
+        Destroy(gameObject, 0.025f);
     }
 
     public virtual void SetControlOutline(bool state_)
@@ -186,22 +228,26 @@ public class Unit : MonoBehaviour
         }
     }
 
-    public void OnBecameVisible()
+    public virtual void OnBecameVisible()
     {
         isInCameraView = true;
     }
 
-    public void OnBecameInvisible()
+    public virtual void OnBecameInvisible()
     {
         isInCameraView = false;
     }
 
     public void OnDrawGizmosSelected()
     {
-        if(attack != null)
+        if(attack.hitsByAttackCount > 0)
         {
-            Gizmos.DrawWireSphere(transform.position, attack.attackDistance);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, attack.attackDistance);           
         }
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, mySize);
     }
 }
 

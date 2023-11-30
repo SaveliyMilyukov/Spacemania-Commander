@@ -36,6 +36,36 @@ public class UnitAI : Unit
 
         CheckOrder();
 
+        if(myEnemyDetector != null)
+        {
+            if(nowOrder.isNull || nowOrder.orderType == UnitOrder.OrderType.MoveAndAttack)
+            {
+                if(myEnemyDetector.enemiesDetected.Count > 0)
+                {
+                    Unit nearestEnemy = null;
+                    float nearestDst = 9999999;
+                    for(int i = 0; i < myEnemyDetector.enemiesDetected.Count; i++)
+                    {
+                        if (myEnemyDetector.enemiesDetected[i] == null) continue;
+                        float curDst = Vector2.Distance(transform.position, myEnemyDetector.enemiesDetected[i].transform.position);
+                        if(curDst < nearestDst)
+                        {
+                            nearestDst = curDst;
+                            nearestEnemy = myEnemyDetector.enemiesDetected[i];
+                        }
+                    }
+
+                    if(nearestEnemy != null)
+                    {
+                        nowOrder.moveTarget = nearestEnemy.transform;
+                        nowOrder.orderType = UnitOrder.OrderType.Attack;
+                        nowOrder.isNull = false;
+                        attackTarget = nearestEnemy;
+                    }
+                }
+            }
+        }
+
         if (!nowOrder.isNull)
         {
             switch (nowOrder.orderType)

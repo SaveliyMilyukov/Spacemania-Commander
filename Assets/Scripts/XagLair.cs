@@ -61,4 +61,15 @@ public class XagLair : ResourceStorage
 
         base.OrderToBuildUnit(unitIndex_);
     }
+    public void OnDrawGizmosSelected()
+    {
+        if (attack.hitsByAttackCount > 0)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, attack.attackDistance);
+        }
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, mySize);
+    }
 }

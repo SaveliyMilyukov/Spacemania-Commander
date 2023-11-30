@@ -64,6 +64,8 @@ public class PlayerCommander : MonoBehaviour
     {
         for (int i = 0; i < unitsControlling.Count; i++)
         {
+            if (unitsControlling[i] == null) continue;
+
             if (unitsControlling[i].GetComponent<UnitAI>())
             {
                 UnitAI u = unitsControlling[i].GetComponent<UnitAI>();
@@ -80,6 +82,7 @@ public class PlayerCommander : MonoBehaviour
     {
         for (int i = 0; i < unitsControlling.Count; i++)
         {
+            if (unitsControlling[i] == null) continue;
             if (unitsControlling[i].GetComponent<Building>())
             {
                 Building b = unitsControlling[i].GetComponent<Building>();

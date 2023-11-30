@@ -35,6 +35,20 @@ public class BuildingWorkplace : Unit
         currentBuildTime = 0;
     }
 
+    public override void FindMyPlayer()
+    {
+        base.FindMyPlayer();
+        
+        if (EnemyDetector.CheckAlliance(FindObjectOfType<PlayerController>(), this))
+        {
+            progressBar.transform.parent.gameObject.SetActive(true);
+        }
+        else
+        {
+            progressBar.transform.parent.gameObject.SetActive(false);
+        }
+    }
+
     public virtual void AddProgress(float speed_)
     {
         // Прибавляем к текущему времени строительства переданное на входе в функцию значение умноженное на время (deltaT)

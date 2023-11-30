@@ -248,7 +248,7 @@ public class PlayerController : PlayerCommander
         else
         {
             buildingUnderCursor.sprite = buildingsPrefabs[buildingChoosed].cursorSprite;
-            buildingUnderCursor.color = Color.white;
+            buildingUnderCursor.color = Color.white - new Color(0, 0, 0, 0.5f);
             buildingUnderCursor.transform.position = lastCursorPositionOnScreen;
         }
     }
@@ -311,7 +311,16 @@ public class PlayerController : PlayerCommander
                 }
                 else
                 {
-                    order = UnitOrder.OrderType.Follow;
+                    if (EnemyDetector.CheckAlliance(this, nearestUnit))
+                    {
+                        print('f');
+                        order = UnitOrder.OrderType.Follow;
+                    }
+                    else
+                    {
+                        print('a');
+                        order = UnitOrder.OrderType.Attack;
+                    }
                 }
             }
         }
@@ -336,8 +345,8 @@ public class PlayerController : PlayerCommander
 
         Vector2 cursorPosition = cam.ScreenToWorldPoint(Input.mousePosition); // Считывание положения курсора в мировых координатах
 
-        Unit nearestUnit = unitsAndConstructions[0];
-        float nearestDst = Vector2.Distance(cursorPosition, nearestUnit.transform.position);
+        Unit nearestUnit = null;
+        float nearestDst = 9999999;
         for(int i = 0; i < unitsAndConstructions.Count; i++) // Поиск ближайшего юнита к курсору
         {
             if (unitsAndConstructions[i] == null)
@@ -354,22 +363,25 @@ public class PlayerController : PlayerCommander
         }
 
         bool isUnitUnderTheCursor = false; // Проверка есть ли тот самый ближайший юнит под курсором (только CircleCollider2D и BoxCollider2D)
-        if (nearestUnit.GetComponent<CircleCollider2D>()) // Проверка с круговым коллайдером
+        if(nearestUnit != null)
         {
-            if (nearestDst < 1f * nearestUnit.GetComponent<CircleCollider2D>().radius)
+            if (nearestUnit.GetComponent<CircleCollider2D>()) // Проверка с круговым коллайдером
             {
-                isUnitUnderTheCursor = true;
+                if (nearestDst < 1f * nearestUnit.GetComponent<CircleCollider2D>().radius)
+                {
+                    isUnitUnderTheCursor = true;
+                }
             }
-        }
-        else if (nearestUnit.GetComponent<BoxCollider2D>()) // Проверка с коробчатым коллайдером
-        {
-            if (nearestDst < 0.9f * nearestUnit.GetComponent<BoxCollider2D>().size.magnitude)
+            else if (nearestUnit.GetComponent<BoxCollider2D>()) // Проверка с коробчатым коллайдером
             {
-                isUnitUnderTheCursor = true;
+                if (nearestDst < 0.9f * nearestUnit.GetComponent<BoxCollider2D>().size.magnitude)
+                {
+                    isUnitUnderTheCursor = true;
+                }
             }
         }
 
-        if (!isUnitUnderTheCursor || nearestUnit.GetComponent<ResourceField>()) { return; } // Если под курсором нет юнита - выходим из функции
+        if (!isUnitUnderTheCursor || nearestUnit?.GetComponent<ResourceField>()) { return; } // Если под курсором нет юнита - выходим из функции
 
         if(Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftControl)) // Если зажат Shift и НЕ зажат Cntrl
         {
