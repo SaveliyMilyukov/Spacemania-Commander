@@ -807,6 +807,7 @@ GameObject:
   - component: {fileID: 4578114775823436561}
   - component: {fileID: 4578114775823436562}
   - component: {fileID: 4578114775823436560}
+  - component: {fileID: 114233817112975210}
   m_Layer: 8
   m_Name: XagBuiLair
   m_TagString: Untagged
@@ -989,6 +990,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3, y: 2.4}
   m_EdgeRadius: 0
+--- !u!114 &114233817112975210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4578114775823436564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71a288562e95f3b4086a89afcbcade20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  supplyCount: 2
 --- !u!1 &4915456829186123725
 GameObject:
   m_ObjectHideFlags: 0

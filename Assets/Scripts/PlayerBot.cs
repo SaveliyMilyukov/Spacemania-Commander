@@ -16,7 +16,10 @@ public class PlayerBot : PlayerCommander
     public XagLair[] lairs;
     public List<XagLarva> larvas;
     public List<UnitAI> workers;
-
+    public List<UnitAI> army;
+    [Space(5)]
+    [SerializeField]
+    public XagLair localPlayerLair;
 
     public override void Awake()
     {
@@ -143,6 +146,17 @@ public class PlayerBot : PlayerCommander
                         if (!larvas[i].TryToStartMutation(2)) larvas[i].TryToStartMutation(1);
                     }
                 }
+                if(army.Count >= 3)
+                {
+                    for(int i = 0; i < army.Count; i++)
+                    {
+                        if(army[i].nowOrder.isNull)
+                        {
+                            army[i].ClearOrders(true);
+                            army[i].AddOrder(UnitOrder.OrderType.MoveAndAttack, localPlayerLair.transform.position, localPlayerLair.transform);
+                        }
+                    }
+                }
                 break;
         }
     }
@@ -228,6 +242,15 @@ public class PlayerBot : PlayerCommander
 
     public void UpdateBases()
     {
+        PlayerController pl = FindObjectOfType<PlayerController>();
+        for(int i = 0; i < pl.constructions.Count; i++)
+        {
+            if(pl.constructions[i].GetComponent<XagLair>())
+            {
+                localPlayerLair = pl.constructions[i].GetComponent<XagLair>();
+            }
+        }
+
         List<XagLair> lairsFound = new List<XagLair>();
         for (int i = 0; i < constructions.Count; i++)
         {
@@ -266,6 +289,11 @@ public class PlayerBot : PlayerCommander
             if(units[i].GetComponent<XagDrone>())
             {
                 workers.Add(units[i]);
+            }
+            else if(!units[i].GetComponent<XagLarva>() &&
+                !units[i].GetComponent<GetSupply>())
+            {
+                army.Add(units[i]);
             }
         }
     }

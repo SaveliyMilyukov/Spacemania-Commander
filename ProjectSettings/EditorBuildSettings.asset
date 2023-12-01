@@ -14,4 +14,19 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Mission1.unity
     guid: 15be8bda1302d0843bbcc51aaad8dcbb
+  - enabled: 1
+    path: Assets/Scenes/Mission2.unity
+    guid: 30929c9ca8fbf454891cb89a9326b98d
+  - enabled: 1
+    path: Assets/Scenes/Mission3.unity
+    guid: 0d97d563b8189314aa81fb282c978209
+  - enabled: 1
+    path: Assets/Scenes/Mission4.unity
+    guid: 533d46f030f3a394ca4023903544d054
+  - enabled: 1
+    path: Assets/Scenes/Mission5.unity
+    guid: de58fe7316f1eee41958bdae480eb2c2
+  - enabled: 1
+    path: Assets/Scenes/ThanksForPlaying.unity
+    guid: 60bb33456480ed249b808cb9d3008cc2
   m_configObjects: {}

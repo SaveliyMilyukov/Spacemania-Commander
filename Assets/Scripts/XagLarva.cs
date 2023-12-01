@@ -42,6 +42,9 @@ public class XagLarva : UnitAI
             pl.DecreaseResources(unitsCanMutate[unitIndex_].unitPrice);
 
             eggSprite.SetActive(true);
+
+            health += 100;
+            healthMax += 100;
             return true;
         }
         else
@@ -56,6 +59,17 @@ public class XagLarva : UnitAI
         timeToMutate = 1;
         Unit u = Instantiate(unitsCanMutate[unitCreatingIndex].unitPrefab, transform.position, Quaternion.identity).GetComponent<Unit>();
         u.playerNumber = playerNumber;
+
+        PlayerController pl = FindObjectOfType<PlayerController>();
+        if(pl.playerNumber == playerNumber)
+        {
+            if(pl.unitsControlling.Contains(this))
+            {
+                pl.unitsControlling.Add(u);
+                pl.unitsControlling.Remove(this);
+            }
+            u.GetComponent<UnitAI>().AddOrder(nowOrder.orderType, nowOrder.movePosition, nowOrder.moveTarget, nowOrder.buildingIndex);
+        }
 
         Die();
 

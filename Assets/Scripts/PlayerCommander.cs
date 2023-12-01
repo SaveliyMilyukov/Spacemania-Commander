@@ -42,10 +42,16 @@ public class PlayerCommander : MonoBehaviour
         unitsAndConstructions.Clear();
         units.Clear();
         limitCurrent = 0;
+        int supplyCount = 0;
         for(int i = 0; i < allUnits.Length; i++)
         {
             if(allUnits[i].playerNumber == playerNumber) // Если юнит принадлежит текущему игрому 
             {
+                if(allUnits[i].GetComponent<GetSupply>())
+                {
+                    supplyCount += allUnits[i].GetComponent<GetSupply>().supplyCount;
+                }
+
                 unitsAndConstructions.Add(allUnits[i]);
                 if(allUnits[i].GetComponent<UnitAI>())
                 {
@@ -58,6 +64,8 @@ public class PlayerCommander : MonoBehaviour
                 }
             }
         }
+
+        limitMax = supplyCount;
     }
 
     public virtual void AddOrderToUnits(UnitOrder.OrderType orderType_, Vector2 position_, Transform target_, bool replaceMode_)

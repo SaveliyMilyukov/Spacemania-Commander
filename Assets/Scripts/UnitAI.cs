@@ -47,6 +47,8 @@ public class UnitAI : Unit
                     for(int i = 0; i < myEnemyDetector.enemiesDetected.Count; i++)
                     {
                         if (myEnemyDetector.enemiesDetected[i] == null) continue;
+                        if (!myEnemyDetector.enemiesDetected[i].isDamageCanBeTaken) continue;
+
                         float curDst = Vector2.Distance(transform.position, myEnemyDetector.enemiesDetected[i].transform.position);
                         if(curDst < nearestDst)
                         {

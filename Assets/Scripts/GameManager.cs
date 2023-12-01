@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     public Tilemap groundTilemap;
     [Space(5)]
     public Color[] playerColors;
+    [Space(5)]
+    public string nextSceneName;
 
     public static GameManager instance;
 

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class XagLair : ResourceStorage
 {
@@ -71,5 +72,55 @@ public class XagLair : ResourceStorage
 
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, mySize);
+    }
+
+    public override void Die()
+    {
+        PlayerController pl = FindObjectOfType<PlayerController>();
+
+        if (playerNumber == pl.playerNumber)
+        {
+            int lairsCount = 0;
+            for(int i = 0; i < pl.constructions.Count; i++)
+            {
+                if (pl.constructions[i] == null) continue;
+                if (pl.constructions[i] == this) continue;
+
+                if(pl.constructions[i].GetComponent<XagLair>())
+                {
+                    lairsCount++;
+                }
+            }
+
+            Debug.Log("LocalPlayer's lairs was defeated. Lairs count: " + lairsCount);
+            if(lairsCount <= 0)
+            {
+                pl.Defeat();
+                return;
+            }
+        }
+        else
+        {
+            int lairsCount = 0;
+            XagLair[] lairs = FindObjectsOfType<XagLair>();
+            for (int i = 0; i < lairs.Length; i++)
+            {
+                if (lairs[i] == null) continue;
+                if (lairs[i] == this) continue;
+
+                if(lairs[i].playerNumber != pl.playerNumber)
+                {
+                    lairsCount++;          
+                }    
+            }
+
+            if (lairsCount <= 0)
+            {
+                pl.Win();
+                return;
+            }
+        }
+
+        base.Die();
     }
 }

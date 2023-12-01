@@ -24,6 +24,7 @@ TextureImporter:
     21300038: UI_Build
     21300040: UI_Ico_Soldier
     21300042: UI_Ico_SoldierAnt
+    21300044: UI_Ico_Overlord
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -503,7 +504,7 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -523,13 +524,33 @@ TextureImporter:
         width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
       spriteID: 989847a92df29f449bdf4da76e1e4a2e
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Ico_Overlord
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 197
+        width: 27
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa51d2498c55c3b43a12f0dcb4ce6c9b
       vertices: []
       indices: 
       edges: []

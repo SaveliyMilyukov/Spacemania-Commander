@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Tilemaps;
 
@@ -9,6 +10,8 @@ public class PlayerController : PlayerCommander
     [SerializeField] private GameObject cameraObjectPrefab;
     [Space(5)]
     [SerializeField] private Transform cameraObject; // Объект камеры (с тегом Player Camera)
+    [SerializeField] private Vector2 minPosition;
+    [SerializeField] private Vector2 maxPosition;
     private Camera cam;
     [SerializeField] private float cameraMoveSpeed = 5;
     [Space(5)]
@@ -45,6 +48,12 @@ public class PlayerController : PlayerCommander
     [Space(5)]
     public Vector2Int lastCursorPositionInGrid;
     public Vector2 lastCursorPositionOnScreen;
+    [Space(10)]
+    public GameObject winPanel;
+    public GameObject losePanel;
+    [Space(3)]
+    public AudioClip winMus;
+    public AudioClip loseMus;
 
     public static PlayerController localPlayer;
 
@@ -228,6 +237,24 @@ public class PlayerController : PlayerCommander
 #endif
 
         Vector2 movingVector = (mouseAxis + keyboardAxis).normalized * cameraMoveSpeed * Time.deltaTime;
+
+        if(movingVector.x < 0 && cameraObject.position.x <= minPosition.x)
+        {
+            movingVector = new Vector2(0, movingVector.y);
+        }
+        else if (movingVector.x > 0 && cameraObject.position.x >= maxPosition.x)
+        {
+            movingVector = new Vector2(0, movingVector.y);
+        }
+        if (movingVector.y < 0 && cameraObject.position.y <= minPosition.y)
+        {
+            movingVector = new Vector2(movingVector.x, 0);
+        }
+        else if (movingVector.y > 0 && cameraObject.position.y >= maxPosition.y)
+        {
+            movingVector = new Vector2(movingVector.x, 0);
+        }
+
         cameraObject.position += (Vector3)movingVector;
     }
 
@@ -633,5 +660,54 @@ public class PlayerController : PlayerCommander
     public void ReCheckBuildingPosition()
     {
 
+    }
+
+    public void Win()
+    {
+        winPanel.SetActive(true);
+
+        AudioSource au = FindObjectOfType<AudioSource>();
+        if(au != null && winMus != null)
+        {
+            au.Stop();
+            au.PlayOneShot(winMus);
+        }
+
+        Invoke(nameof(Win2), 10f);
+        enabled = false;
+    }
+    public void Win2()
+    {
+        SceneManager.LoadScene(GameManager.instance.nextSceneName);   
+    }
+
+    public void Defeat()
+    {
+        losePanel.SetActive(true);
+
+        AudioSource au = FindObjectOfType<AudioSource>();
+        if (au != null && loseMus != null)
+        {
+            au.Stop();
+            au.PlayOneShot(loseMus);
+        }
+
+        if (loseMus != null) FindObjectOfType<AudioSource>()?.PlayOneShot(loseMus);
+        Invoke(nameof(Defeat2), 5f);
+        enabled = false;
+    }
+    public void Defeat2()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void ToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void SwitchGOActiveState(GameObject object_)
+    {
+        object_.SetActive(!object_.activeSelf);
     }
 }

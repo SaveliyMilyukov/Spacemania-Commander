@@ -87,24 +87,18 @@ public class Unit : MonoBehaviour
         {
             if (!isDead)
             {
+                print("Die");
                 isDead = true;
                 Die();
             }
             return;
         }
         if(healthBar != null)
-        {
-            if(vision.activeSelf)
-            {
-                float h = health, hM = healthMax;
-                healthBar.fillAmount = h / hM;
-                if (h / hM == 1) healthBar.transform.parent.gameObject.SetActive(false);
-                else healthBar.transform.parent.gameObject.SetActive(true);
-            }
-            else
-            {
-                healthBar.transform.parent.gameObject.SetActive(false);
-            }
+        {           
+            float h = health, hM = healthMax;
+            healthBar.fillAmount = h / hM;
+            if (h / hM == 1) healthBar.transform.parent.gameObject.SetActive(false);
+            else healthBar.transform.parent.gameObject.SetActive(true);           
         }
 
         if(attack.isAttacked) // Если уже совершил атаку
@@ -207,6 +201,7 @@ public class Unit : MonoBehaviour
 
     public virtual void Die()
     {
+        print("Die void");
         isDead = true;
         FindPlayerByNumber(playerNumber).UpdateUnits();
         Destroy(gameObject, 0.025f);
